@@ -83,7 +83,7 @@ export default function HomePage() {
                 { name: 'Bulls', img: 'https://images.unsplash.com/photo-1549471013-3364d7220b75?w=500&q=80' },
                 { name: 'Cows', img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=500&q=80' },
                 { name: 'Calves', img: 'https://images.unsplash.com/photo-1545468800-85cc9bc6ecf7?w=500&q=80' },
-                { name: 'Buffaloes', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Water_buffalo_-_Pik_best_-_4.jpg/800px-Water_buffalo_-_Pik_best_-_4.jpg' },
+                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1502472911149-160124c65f24?w=500&q=80' },
                 { name: 'Goats', img: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=500&q=80' },
                 { name: 'Sheep', img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=500&q=80' }
               ].map((cat, i) => (
