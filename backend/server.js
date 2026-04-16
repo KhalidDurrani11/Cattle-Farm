@@ -16,18 +16,9 @@ import adminRoutes from './routes/admin.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://agritradex.netlify.app',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
-
+// Fully open CORS to allow any Netlify domain to connect
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
-    else callback(new Error('Not allowed by CORS'));
-  },
+  origin: true, // This reflects the requested origin back
   credentials: true,
 }));
 
