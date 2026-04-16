@@ -22,7 +22,7 @@ export default function SellerPage() {
       getCattle(),
     ]).then(([sellerData, allCattle]) => {
       setSeller(sellerData as User);
-      const all = allCattle as Cattle[];
+      const all = allCattle.data as Cattle[];
       setCattle(all.filter(c => {
         const sid = typeof c.sellerId === 'object' ? (c.sellerId._id || c.sellerId.id) : c.sellerId;
         return sid === id;

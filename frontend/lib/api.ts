@@ -142,7 +142,7 @@ export async function getDashboard(token: string) {
   const res = await fetch(`${API_BASE}/api/users/dashboard`, {
     headers: authHeaders(token),
   });
-  return handleResponse(res);
+  return handleResponse<any>(res);
 }
 
 export async function getSellerProfile(id: string) {
