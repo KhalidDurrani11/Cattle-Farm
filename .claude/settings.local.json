@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(cd C:\\\\Users\\\\Khalid Durrani\\\\Desktop\\\\cattle\\\\cattle\\\\backend)",
+      "Bash(npm ls:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 5 node server.js)",
+      "Bash(pkill -f node)",
+      "Bash(PORT=5001 node server.js)",
+      "Bash(curl -s -X POST http://localhost:5001/api/auth/register -H 'Content-Type: application/json' -d '{\"name\":\"Test User\",\"email\":\"test456@example.com\",\"password\":\"password123\",\"role\":\"buyer\"}')"
+    ]
+  }
+}
