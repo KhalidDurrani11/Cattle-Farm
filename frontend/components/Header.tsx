@@ -75,20 +75,22 @@ export default function Header() {
           {user && navLink('/dashboard', 'Dashboard')}
         </div>
 
-        {/* Right Side */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Actions */}
+        <div className="flex items-center gap-2 md:gap-4">
           {mounted && (
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg hover:bg-[#1E4620]/10 dark:hover:bg-white/10 transition-colors text-[#4E342E] dark:text-[#EFEBE9]"
+              aria-label="Toggle Dark Mode"
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
           )}
 
-          {user ? (
-            <div className="relative group">
-              <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+          <div className="hidden md:flex items-center gap-4">
+            {user ? (
+              <div className="relative group">
+                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
                 <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
                   {user.name?.[0]?.toUpperCase()}
                 </div>
@@ -140,11 +142,12 @@ export default function Header() {
               Sign In
             </Link>
           )}
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2"
+          className="md:hidden p-2 text-[#4E342E] dark:text-[#EFEBE9]"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

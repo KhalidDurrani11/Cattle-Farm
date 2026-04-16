@@ -9,7 +9,7 @@ export default function HomePage() {
       
       {/* Cinematic Hero */}
       <section 
-        className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-32 pb-20 bg-cover bg-[center_35%] bg-no-repeat transition-all"
+        className="relative min-h-[90svh] flex flex-col items-center justify-center overflow-hidden pt-28 pb-16 bg-cover bg-[center_35%] bg-no-repeat transition-all"
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000&auto=format&fit=crop")' }}
       >
         <div className="absolute inset-0 z-0">
@@ -19,22 +19,22 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-[#4A2712]/10 z-10 mix-blend-multiply"></div>
         </div>
         
-        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-8 md:mt-0">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1E4620]/90 backdrop-blur-md text-white font-medium text-sm mb-6 shadow-lg border border-white/20 animate-float">
+        <div className="relative z-20 text-center px-5 sm:px-8 max-w-4xl mx-auto mt-8 md:mt-0 w-full">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1E4620]/90 backdrop-blur-md text-white font-medium text-[13px] sm:text-sm mb-6 shadow-lg border border-white/20 animate-float">
             <Leaf className="w-4 h-4 text-[#8FBC8F]" /> The Premier Livestock Marketplace
           </span>
-          <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight text-white drop-shadow-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-5 leading-[1.1] text-white drop-shadow-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             Empowering Pakistan's <br/>
             <span className="text-[#8FBC8F] font-serif italic drop-shadow-lg">Agricultural Heritage.</span>
           </h1>
-          <p className="font-sans text-lg md:text-xl text-[#F5F5DC] max-w-2xl mx-auto mb-10 leading-relaxed font-medium drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+          <p className="font-sans text-base sm:text-lg md:text-xl text-[#F5F5DC] max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed font-medium drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             Connect directly with verified farmers, access pristine livestock genetics, and secure your transactions across all provinces with pure transparency.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-            <Link href="/marketplace" className="w-full sm:w-auto bg-[#1E4620] hover:bg-[#153316] animate-pulse-glow shadow-xl text-white px-8 py-3.5 text-lg font-bold rounded-xl flex items-center justify-center gap-2 group transition-all">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center animate-fade-in-up w-full sm:w-auto" style={{ animationDelay: '600ms' }}>
+            <Link href="/marketplace" className="w-full sm:w-auto bg-[#1E4620] hover:bg-[#153316] animate-pulse-glow shadow-xl text-white px-8 py-4 sm:py-3.5 text-base sm:text-lg font-bold rounded-xl flex items-center justify-center gap-2 group transition-all">
               Browse Listings <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 text-lg font-bold text-white border-2 border-white/60 hover:bg-[#4A2712]/80 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-lg">
+            <Link href="/register" className="w-full sm:w-auto px-8 py-4 sm:py-3.5 text-base sm:text-lg font-bold text-white border-2 border-white/60 hover:bg-[#4A2712]/80 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-lg flex items-center justify-center">
               Register as Seller
             </Link>
           </div>
