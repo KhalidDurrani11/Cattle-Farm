@@ -114,7 +114,7 @@ export default function FarmerDashboard({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Total Views</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalViews.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{(stats.totalViews || 0).toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
               <Eye className="w-5 h-5 text-purple-600" />
@@ -126,7 +126,7 @@ export default function FarmerDashboard({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Revenue</p>
-              <p className="text-2xl font-bold text-green-600">₨{stats.totalRevenue.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-green-600">₨{(stats.totalRevenue || 0).toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-green-600" />

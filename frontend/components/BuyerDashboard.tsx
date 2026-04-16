@@ -52,7 +52,7 @@ export default function BuyerDashboard({ purchases, inquiries, favorites, stats 
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">Total Spent</p>
-              <p className="text-2xl font-bold text-green-600">₨{stats.totalSpent.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-green-600">₨{(stats.totalSpent || 0).toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-green-600" />
