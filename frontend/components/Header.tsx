@@ -44,10 +44,10 @@ export default function Header() {
       <Link
         href={href}
         onClick={() => setMenuOpen(false)}
-        className={`font-medium transition-colors ${
+        className={`font-semibold tracking-wide transition-all ${
           isActive
-            ? 'text-primary font-semibold'
-            : 'text-gray-600 dark:text-gray-300 hover:text-primary'
+            ? 'text-[#8B5A2B] dark:text-[#D7CCC8] border-b-2 border-[#8B5A2B] pb-1'
+            : 'text-[#5D4037] dark:text-[#A1887F] hover:text-[#8B5A2B] hover:border-b-2 hover:border-[#8B5A2B]/30 pb-1 border-b-2 border-transparent'
         }`}
       >
         {label}
@@ -56,15 +56,15 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-100 dark:border-slate-800">
-      <nav className="flex justify-between items-center px-4 md:px-8 py-3 max-w-7xl mx-auto">
+    <header className="bg-[#FAF8F5]/90 dark:bg-[#1C1917]/90 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-[#8B5A2B]/20 shadow-sm transition-colors duration-300">
+      <nav className="flex justify-between items-center px-4 md:px-8 py-4 max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-primary/10 p-2 rounded-lg text-primary">
-            <Tractor className="w-5 h-5" />
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="bg-[#8B5A2B]/10 group-hover:bg-[#8B5A2B]/20 transition-colors p-2 rounded-xl text-[#8B5A2B]">
+            <Tractor className="w-6 h-6" />
           </div>
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
-            AgriTrade<span className="text-primary">X</span>
+          <span className="text-2xl font-black tracking-tight text-[#3E2723] dark:text-[#EFEBE9]">
+            AgriTrade<span className="text-sky-600 dark:text-sky-400">X</span>
           </span>
         </Link>
 
