@@ -110,7 +110,7 @@ export default function HomePage() {
             <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl relative z-10 border border-[#8B5A2B]/10 shadow-sm flex flex-col items-center">
               <div className="w-16 h-16 bg-[#F2ECE4] dark:bg-[#3E2723] text-[#8B5A2B] rounded-full flex items-center justify-center font-serif text-2xl font-bold mb-6 border-4 border-[#FAF8F5] dark:border-[#1C1917]">2</div>
               <h3 className="font-bold text-xl mb-3 text-[#3E2723] dark:text-[#EFEBE9]">Submit Details</h3>
-              <p className="text-center text-[#5D4037] dark:text-[#D7CCC8]">Navigate to your Dashboard -> Verification Tab. Upload your CNIC and farm specifics.</p>
+              <p className="text-center text-[#5D4037] dark:text-[#D7CCC8]">Navigate to your Dashboard &rarr; Verification Tab. Upload your CNIC and farm specifics.</p>
             </div>
 
             <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl relative z-10 border border-[#8B5A2B]/10 shadow-sm flex flex-col items-center">
