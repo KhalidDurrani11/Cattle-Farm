@@ -4,7 +4,7 @@ import { Tractor, Heart, Mail, MapPin, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#5D4037] text-[#FAF8F5] border-t border-[#3E2723] py-16 px-6 md:px-12 transition-colors duration-300">
+    <footer className="bg-[#1C1917] text-[#FAF8F5] border-t border-[#292524] py-16 px-6 md:px-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         
         {/* Brand */}
@@ -63,7 +63,7 @@ export default function Footer() {
 
       </div>
 
-      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#3E2723] flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#292524] flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-[#F5F5DC] text-xs font-medium">© {new Date().getFullYear()} AgriTradeX. All rights reserved.</p>
         <div className="flex items-center gap-6 text-xs text-[#F5F5DC]">
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>

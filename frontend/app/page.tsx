@@ -150,7 +150,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1917] via-transparent to-[#FAF8F5] dark:to-[#1C1917]"></div>
         </div>
         
-        <div className="max-w-4xl mx-auto text-center relative z-10 bg-[#1C1917]/40 backdrop-blur-xl p-12 md:p-20 rounded-[2rem] border border-white/10 shadow-2xl animate-fade-in-up" overflow-hidden>
+        <div className="max-w-4xl mx-auto text-center relative z-10 bg-[#1C1917]/40 backdrop-blur-xl p-12 md:p-20 rounded-[2rem] border border-white/10 shadow-2xl animate-fade-in-up overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent"></div>
           <ShieldCheck className="relative w-20 h-20 text-[#8FBC8F] mx-auto mb-8 drop-shadow-[0_0_15px_rgba(143,188,143,0.5)] animate-float" />
           <h2 className="relative font-serif text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-xl">Secure Your Livestock Today</h2>
