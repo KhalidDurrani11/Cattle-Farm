@@ -81,14 +81,14 @@ export default function HomePage() {
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {[
                 { name: 'Bulls', img: 'https://images.unsplash.com/photo-1549471013-3364d7220b75?w=500&q=80' },
-                { name: 'Cows', img: 'https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?w=500&q=80' },
+                { name: 'Cows', img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=500&q=80' },
                 { name: 'Calves', img: 'https://images.unsplash.com/photo-1545468800-85cc9bc6ecf7?w=500&q=80' },
-                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1534005391910-1d120a1ebec4?w=500&q=80' },
+                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=500&q=80' },
                 { name: 'Goats', img: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=500&q=80' },
                 { name: 'Sheep', img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=500&q=80' }
               ].map((cat, i) => (
                 <Link href={`/marketplace?category=${cat.name.replace('es', '')}`} key={cat.name} className={`group relative rounded-2xl overflow-hidden aspect-square border border-[#4A2712]/20 shadow-md hover:shadow-xl hover:border-[#4A2712] transition-all duration-500 animate-fade-in-up flex items-end`} style={{ animationDelay: `${i * 100}ms` }}>
-                  <Image src={cat.img} alt={cat.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover group-hover:scale-110 transition-transform duration-700 z-0" />
+                  <img src={cat.img} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 z-0" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#4A2712]/90 via-[#4A2712]/40 to-transparent z-10"></div>
                   <div className="relative z-20 w-full p-4 text-center">
                     <span className="font-bold text-white text-lg tracking-wide">{cat.name}</span>
