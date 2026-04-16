@@ -46,8 +46,8 @@ export default function Header() {
         onClick={() => setMenuOpen(false)}
         className={`font-semibold tracking-wide transition-all ${
           isActive
-            ? 'text-[#5D4037] dark:text-[#D7CCC8] border-b-2 border-[#5D4037] pb-1'
-            : 'text-[#795548] dark:text-[#A1887F] hover:text-[#5D4037] hover:border-b-2 hover:border-[#5D4037]/40 pb-1 border-b-2 border-transparent'
+            ? 'text-[#1E4620] dark:text-[#8FBC8F] border-b-2 border-[#1E4620] dark:border-[#8FBC8F] pb-1'
+            : 'text-[#4E342E] dark:text-[#A1887F] hover:text-[#1E4620] hover:dark:text-[#8FBC8F] hover:border-b-2 hover:border-[#1E4620]/40 pb-1 border-b-2 border-transparent'
         }`}
       >
         {label}
@@ -56,15 +56,15 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#FAF8F5]/90 dark:bg-[#27211E]/90 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-[#795548]/10 shadow-sm transition-colors duration-300">
+    <header className="bg-[#FAF8F5]/90 dark:bg-[#1C1917]/90 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-[#1E4620]/10 shadow-sm transition-colors duration-300">
       <nav className="flex justify-between items-center px-4 md:px-8 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-[#795548]/10 group-hover:bg-[#795548]/20 transition-colors p-2 rounded-xl text-[#5D4037]">
+          <div className="bg-[#1E4620]/10 group-hover:bg-[#1E4620]/20 transition-colors p-2 rounded-xl text-[#1E4620]">
             <Tractor className="w-6 h-6" />
           </div>
           <span className="text-2xl font-black tracking-tight text-[#4E342E] dark:text-[#EFEBE9]">
-            AgriTrade<span className="text-[#2E8B57] dark:text-[#8FBC8F]">X</span>
+            AgriTrade<span className="text-[#1E4620] dark:text-[#8FBC8F]">X</span>
           </span>
         </Link>
 

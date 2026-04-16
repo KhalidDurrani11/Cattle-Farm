@@ -109,7 +109,7 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
               <p className="text-sm text-gray-500">{cattle.breed} • {cattle.category}</p>
             </div>
             <div className="text-right">
-              <p className="text-xl font-bold text-primary-600">₨{cattle.price.toLocaleString()}</p>
+              <p className="text-xl font-bold text-[#1E4620] dark:text-[#8FBC8F]">₨{cattle.price.toLocaleString()}</p>
               {getStatusBadge()}
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
             <p className="text-sm text-gray-500">{cattle.breed} • {cattle.category}</p>
           </div>
           <div className="text-right">
-            <p className="font-bold text-primary-600">₨{cattle.price.toLocaleString()}</p>
+            <p className="font-bold text-[#1E4620] dark:text-[#8FBC8F]">₨{cattle.price.toLocaleString()}</p>
           </div>
         </div>
 

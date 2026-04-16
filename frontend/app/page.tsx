@@ -9,35 +9,37 @@ export default function HomePage() {
       
       {/* Cinematic Hero */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0 z-0 bg-[#4E342E]">
+        <div className="absolute inset-0 z-0">
           <Image
             alt="Pakistani Cattle Farm"
-            className="object-cover opacity-70 mix-blend-overlay hover:scale-105 transition-transform duration-[4000ms]"
+            className="object-cover transition-transform origin-center duration-[10000ms] hover:scale-[1.1]"
             src="https://images.unsplash.com/photo-1528151833130-1c7c90b6fb89?q=80&w=2000&auto=format&fit=crop"
             fill
             sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF8F5] dark:from-[#27211E] via-[#FAF8F5]/20 dark:via-[#27211E]/40 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent z-10"></div>
+          {/* Subtle vignette/gradient to ensure text stands out over the image */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF8F5] dark:from-[#1C1917] via-transparent to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-black/20 z-10 backdrop-blur-[2px]"></div>
         </div>
         
-        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto animate-fade-in-up mt-8 md:mt-0">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#795548]/80 text-white font-medium text-sm mb-6 shadow-md border border-white/20">
+        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-8 md:mt-0">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1E4620]/90 backdrop-blur-md text-white font-medium text-sm mb-6 shadow-lg border border-white/20 animate-float">
             <Leaf className="w-4 h-4 text-[#8FBC8F]" /> The Premier Livestock Marketplace
           </span>
-          <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight text-white drop-shadow-lg">
+          <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight text-white drop-shadow-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             Empowering Pakistan's <br/>
-            <span className="text-[#87CEEB] font-serif italic drop-shadow-md">Agricultural Heritage.</span>
+            <span className="text-[#8FBC8F] font-serif italic drop-shadow-lg">Agricultural Heritage.</span>
           </h1>
-          <p className="font-sans text-lg md:text-xl text-[#F5F5DC] max-w-2xl mx-auto mb-10 leading-relaxed font-medium drop-shadow-md">
+          <p className="font-sans text-lg md:text-xl text-[#F5F5DC] max-w-2xl mx-auto mb-10 leading-relaxed font-medium drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             Connect directly with verified farmers, access pristine livestock genetics, and secure your transactions across all provinces with pure transparency.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/marketplace" className="w-full sm:w-auto bg-[#795548] hover:bg-[#6B4423] shadow-lg text-white px-8 py-3.5 text-lg font-semibold rounded-xl flex items-center justify-center gap-2 group transition-all">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+            <Link href="/marketplace" className="w-full sm:w-auto bg-[#1E4620] hover:bg-[#153316] animate-pulse-glow shadow-xl text-white px-8 py-3.5 text-lg font-bold rounded-xl flex items-center justify-center gap-2 group transition-all">
               Browse Listings <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 text-lg font-semibold text-white border-2 border-white/40 hover:bg-white/20 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-md">
+            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 text-lg font-bold text-white border-2 border-white/60 hover:bg-white/20 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-lg">
               Register as Seller
             </Link>
           </div>
@@ -129,25 +131,27 @@ export default function HomePage() {
       </section>
 
       {/* Call to action */}
-      <section className="py-32 px-6 md:px-12 relative overflow-hidden bg-[#4E342E]">
+      <section className="py-32 px-6 md:px-12 relative overflow-hidden bg-[#1C1917]">
         <div className="absolute inset-0 z-0">
           <Image
             src="https://images.unsplash.com/photo-1596733430284-f74370602260?q=80&w=2000&auto=format&fit=crop"
             alt="Farming"
             fill
             sizes="100vw"
-            className="object-cover opacity-20 dark:opacity-10 mix-blend-overlay"
+            className="object-cover opacity-30 mix-blend-overlay"
           />
-          <div className="absolute inset-0 bg-[#795548]/20 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-[#1E4620]/30 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1917] via-transparent to-[#FAF8F5] dark:to-[#1C1917]"></div>
         </div>
         
-        <div className="max-w-4xl mx-auto text-center relative z-10 bg-white/10 dark:bg-black/20 backdrop-blur-md p-12 md:p-20 rounded-[2rem] border border-white/20 shadow-2xl">
-          <ShieldCheck className="w-20 h-20 text-[#8FBC8F] mx-auto mb-8 drop-shadow-md" />
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg">Secure Your Livestock Today</h2>
-          <p className="font-sans text-lg text-[#F5F5DC] mb-10 max-w-2xl mx-auto drop-shadow">
+        <div className="max-w-4xl mx-auto text-center relative z-10 bg-[#1C1917]/40 backdrop-blur-xl p-12 md:p-20 rounded-[2rem] border border-white/10 shadow-2xl animate-fade-in-up" overflow-hidden>
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent"></div>
+          <ShieldCheck className="relative w-20 h-20 text-[#8FBC8F] mx-auto mb-8 drop-shadow-[0_0_15px_rgba(143,188,143,0.5)] animate-float" />
+          <h2 className="relative font-serif text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-xl">Secure Your Livestock Today</h2>
+          <p className="relative font-sans text-lg text-[#D7CCC8] mb-10 max-w-2xl mx-auto drop-shadow-md">
             Join thousands of registered buyers and sellers shaping the future of Pakistan's digital agricultural economy. 
           </p>
-          <Link href="/register" className="bg-[#795548] hover:bg-[#6B4423] text-white text-lg px-12 py-4 rounded-xl font-bold shadow-xl transition-all">
+          <Link href="/register" className="relative inline-flex bg-[#1E4620] hover:bg-[#153316] text-white text-lg px-12 py-4 rounded-xl font-bold shadow-[0_0_20px_rgba(30,70,32,0.4)] transition-all animate-pulse-glow">
             Create Free Account
           </Link>
         </div>
