@@ -4,13 +4,13 @@ import { Tractor, Heart, Mail, MapPin, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1C1917] text-[#FAF8F5] border-t border-[#292524] py-16 px-6 md:px-12 transition-colors duration-300">
+    <footer className="bg-[#8B4513] text-[#FAF8F5] border-t border-[#6B3410] py-16 px-6 md:px-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         
         {/* Brand */}
         <div className="md:col-span-1">
           <div className="flex items-center gap-2.5 mb-6">
-            <div className="bg-[#1E4620]/20 p-1.5 rounded-lg text-[#8FBC8F]">
+            <div className="bg-white/20 p-1.5 rounded-lg text-white">
               <Tractor className="w-5 h-5" />
             </div>
             <span className="font-serif text-xl font-bold tracking-tight text-white">AgriTrade<span className="text-[#8FBC8F] italic">X</span></span>
@@ -63,9 +63,9 @@ export default function Footer() {
 
       </div>
 
-      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#4E342E] flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-[#A1887F] text-xs font-medium">© {new Date().getFullYear()} AgriTradeX. All rights reserved.</p>
-        <div className="flex items-center gap-6 text-xs text-[#A1887F]">
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#6B3410] flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="text-[#F5F5DC] text-xs font-medium">© {new Date().getFullYear()} AgriTradeX. All rights reserved.</p>
+        <div className="flex items-center gap-6 text-xs text-[#F5F5DC]">
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
         </div>
