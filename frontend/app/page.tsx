@@ -9,14 +9,14 @@ export default function HomePage() {
       
       {/* Cinematic Hero */}
       <section 
-        className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-32 pb-20 bg-cover bg-center bg-no-repeat transition-all"
+        className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-32 pb-20 bg-cover bg-[center_35%] bg-no-repeat transition-all"
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000&auto=format&fit=crop")' }}
       >
         <div className="absolute inset-0 z-0">
           {/* Subtle vignette/gradient to ensure text stands out over the image */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#FAF8F5] dark:from-[#1C1917] via-transparent to-transparent z-10"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-[#8B4513]/10 z-10 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-[#4A2712]/10 z-10 mix-blend-multiply"></div>
         </div>
         
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-8 md:mt-0">
@@ -34,7 +34,7 @@ export default function HomePage() {
             <Link href="/marketplace" className="w-full sm:w-auto bg-[#1E4620] hover:bg-[#153316] animate-pulse-glow shadow-xl text-white px-8 py-3.5 text-lg font-bold rounded-xl flex items-center justify-center gap-2 group transition-all">
               Browse Listings <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 text-lg font-bold text-white border-2 border-white/60 hover:bg-[#8B4513]/80 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-lg">
+            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 text-lg font-bold text-white border-2 border-white/60 hover:bg-[#4A2712]/80 rounded-xl backdrop-blur-md transition-all text-center drop-shadow-lg">
               Register as Seller
             </Link>
           </div>
@@ -45,27 +45,27 @@ export default function HomePage() {
       <section className="py-24 px-6 md:px-12 bg-[#FAF8F5] dark:bg-[#1C1917] relative z-20 -mt-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#8B4513]/10 shadow-[0_4px_20px_-4px_rgba(139,69,19,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '100ms' }}>
-              <div className="w-14 h-14 bg-[#8B4513]/10 rounded-2xl flex items-center justify-center mb-6 text-[#8B4513]">
+            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#4A2712]/10 shadow-[0_4px_20px_-4px_rgba(74,39,18,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '100ms' }}>
+              <div className="w-14 h-14 bg-[#4A2712]/10 rounded-2xl flex items-center justify-center mb-6 text-[#4A2712]">
                 <MapPin className="w-7 h-7" />
               </div>
-              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4E342E] dark:text-[#EFEBE9]">Nationwide Network</h3>
+              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4A2712] dark:text-[#EFEBE9]">Nationwide Network</h3>
               <p className="text-[#5D4037] dark:text-[#D7CCC8] leading-relaxed">Source the healthiest cattle directly from Punjab, Sindh, KPK, and Balochistan. Pure transparency in origin and lineage.</p>
             </div>
             
-            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#8B4513]/10 shadow-[0_4px_20px_-4px_rgba(139,69,19,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '200ms' }}>
+            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#4A2712]/10 shadow-[0_4px_20px_-4px_rgba(74,39,18,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '200ms' }}>
               <div className="w-14 h-14 bg-[#1E4620]/10 rounded-2xl flex items-center justify-center mb-6 text-[#1E4620]">
                 <Shield className="w-7 h-7" />
               </div>
-              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4E342E] dark:text-[#EFEBE9]">Verified Farmers</h3>
+              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4A2712] dark:text-[#EFEBE9]">Verified Farmers</h3>
               <p className="text-[#5D4037] dark:text-[#D7CCC8] leading-relaxed">Every seller undergoes a stringent verification process. Review agricultural track records, ratings, and health certificates openly.</p>
             </div>
             
-            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#8B4513]/10 shadow-[0_4px_20px_-4px_rgba(139,69,19,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '300ms' }}>
-              <div className="w-14 h-14 bg-[#8B4513]/10 rounded-2xl flex items-center justify-center mb-6 text-[#8B4513] dark:text-[#8B4513]">
+            <div className="bg-white dark:bg-[#292524] p-8 rounded-2xl animate-fade-in-up border border-[#4A2712]/10 shadow-[0_4px_20px_-4px_rgba(74,39,18,0.1)] hover:-translate-y-1 transition-transform" style={{ animationDelay: '300ms' }}>
+              <div className="w-14 h-14 bg-[#4A2712]/10 rounded-2xl flex items-center justify-center mb-6 text-[#4A2712] dark:text-[#4A2712]">
                 <Users className="w-7 h-7" />
               </div>
-              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4E342E] dark:text-[#EFEBE9]">Community Trust</h3>
+              <h3 className="font-serif text-2xl font-bold mb-3 text-[#4A2712] dark:text-[#EFEBE9]">Community Trust</h3>
               <p className="text-[#5D4037] dark:text-[#D7CCC8] leading-relaxed">Built for the people. Negotiate directly with livestock owners without aggressive middlemen manipulating market thresholds.</p>
             </div>
           </div>
@@ -73,23 +73,23 @@ export default function HomePage() {
       </section>
 
       {/* Featured Categories / Stats */}
-      <section className="py-24 bg-[#F2ECE4] dark:bg-[#292524] border-y border-[#8B4513]/20">
+      <section className="py-24 bg-[#F2ECE4] dark:bg-[#292524] border-y border-[#4A2712]/20">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-           <h2 className="font-serif text-4xl font-bold mb-4 text-[#8B4513] dark:text-[#EFEBE9]">Livestock Categories</h2>
+           <h2 className="font-serif text-4xl font-bold mb-4 text-[#4A2712] dark:text-[#EFEBE9]">Livestock Categories</h2>
            <p className="text-[#5D4037] dark:text-[#D7CCC8] max-w-2xl mx-auto mb-16">Find exactly what you need quickly with our standardized classification system.</p>
            
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {[
                 { name: 'Bulls', img: 'https://images.unsplash.com/photo-1549471013-3364d7220b75?w=500&q=80' },
-                { name: 'Cows', img: 'https://images.unsplash.com/photo-1596733430284-f74370602260?w=500&q=80' },
+                { name: 'Cows', img: 'https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?w=500&q=80' },
                 { name: 'Calves', img: 'https://images.unsplash.com/photo-1545468800-85cc9bc6ecf7?w=500&q=80' },
-                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1605333396558-75c13b192cd2?w=500&q=80' },
+                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1534005391910-1d120a1ebec4?w=500&q=80' },
                 { name: 'Goats', img: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=500&q=80' },
                 { name: 'Sheep', img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=500&q=80' }
               ].map((cat, i) => (
-                <Link href={`/marketplace?category=${cat.name.replace('es', '')}`} key={cat.name} className={`group relative rounded-2xl overflow-hidden aspect-square border border-[#8B4513]/20 shadow-md hover:shadow-xl hover:border-[#8B4513] transition-all duration-500 animate-fade-in-up flex items-end`} style={{ animationDelay: `${i * 100}ms` }}>
-                  <Image src={cat.img} alt={cat.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700 z-0" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#8B4513]/90 via-[#8B4513]/40 to-transparent z-10"></div>
+                <Link href={`/marketplace?category=${cat.name.replace('es', '')}`} key={cat.name} className={`group relative rounded-2xl overflow-hidden aspect-square border border-[#4A2712]/20 shadow-md hover:shadow-xl hover:border-[#4A2712] transition-all duration-500 animate-fade-in-up flex items-end`} style={{ animationDelay: `${i * 100}ms` }}>
+                  <Image src={cat.img} alt={cat.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover group-hover:scale-110 transition-transform duration-700 z-0" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#4A2712]/90 via-[#4A2712]/40 to-transparent z-10"></div>
                   <div className="relative z-20 w-full p-4 text-center">
                     <span className="font-bold text-white text-lg tracking-wide">{cat.name}</span>
                   </div>
