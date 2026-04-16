@@ -16,7 +16,7 @@ export default function HomePage() {
           {/* Subtle vignette/gradient to ensure text stands out over the image */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#FAF8F5] dark:from-[#1C1917] via-transparent to-transparent z-10"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-[#4A2712]/10 z-10 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-[#5D4037]/10 z-10 mix-blend-multiply"></div>
         </div>
         
         <div className="relative z-20 text-center px-5 sm:px-8 max-w-4xl mx-auto mt-8 md:mt-0 w-full">
@@ -73,9 +73,9 @@ export default function HomePage() {
       </section>
 
       {/* Featured Categories / Stats */}
-      <section className="py-24 bg-[#F2ECE4] dark:bg-[#292524] border-y border-[#4A2712]/20">
+      <section className="py-24 bg-[#F2ECE4] dark:bg-[#292524] border-y border-[#5D4037]/20">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-           <h2 className="font-serif text-4xl font-bold mb-4 text-[#4A2712] dark:text-[#EFEBE9]">Livestock Categories</h2>
+           <h2 className="font-serif text-4xl font-bold mb-4 text-[#5D4037] dark:text-[#EFEBE9]">Livestock Categories</h2>
            <p className="text-[#5D4037] dark:text-[#D7CCC8] max-w-2xl mx-auto mb-16">Find exactly what you need quickly with our standardized classification system.</p>
            
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -83,13 +83,13 @@ export default function HomePage() {
                 { name: 'Bulls', img: 'https://images.unsplash.com/photo-1549471013-3364d7220b75?w=500&q=80' },
                 { name: 'Cows', img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=500&q=80' },
                 { name: 'Calves', img: 'https://images.unsplash.com/photo-1545468800-85cc9bc6ecf7?w=500&q=80' },
-                { name: 'Buffaloes', img: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=500&q=80' },
+                { name: 'Buffaloes', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Water_buffalo_-_Pik_best_-_4.jpg/800px-Water_buffalo_-_Pik_best_-_4.jpg' },
                 { name: 'Goats', img: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=500&q=80' },
                 { name: 'Sheep', img: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=500&q=80' }
               ].map((cat, i) => (
-                <Link href={`/marketplace?category=${cat.name.replace('es', '')}`} key={cat.name} className={`group relative rounded-2xl overflow-hidden aspect-square border border-[#4A2712]/20 shadow-md hover:shadow-xl hover:border-[#4A2712] transition-all duration-500 animate-fade-in-up flex items-end`} style={{ animationDelay: `${i * 100}ms` }}>
+                <Link href={`/marketplace?category=${cat.name.replace('es', '')}`} key={cat.name} className={`group relative rounded-2xl overflow-hidden aspect-square border border-[#5D4037]/20 shadow-md hover:shadow-xl hover:border-[#5D4037] transition-all duration-500 animate-fade-in-up flex items-end`} style={{ animationDelay: `${i * 100}ms` }}>
                   <img src={cat.img} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 z-0" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#4A2712]/90 via-[#4A2712]/40 to-transparent z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#5D4037]/90 via-[#5D4037]/40 to-transparent z-10"></div>
                   <div className="relative z-20 w-full p-4 text-center">
                     <span className="font-bold text-white text-lg tracking-wide">{cat.name}</span>
                   </div>
