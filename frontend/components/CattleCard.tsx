@@ -215,8 +215,7 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
         </div>
 
         {seller && (
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700"
-003e
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold text-primary">
                 {seller.name?.[0]}
