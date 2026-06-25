@@ -1,4 +1,4 @@
-import 'dotenv/config'; // Trigger restart
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 // Fully open CORS to allow any Netlify domain to connect
 app.use(cors({
-  origin: true, // This reflects the requested origin back
+  origin: true,
   credentials: true,
 }));
 
@@ -44,9 +44,6 @@ const generalLimiter = rateLimit({
 });
 app.use('/api', generalLimiter);
 
-// Connect to Database
-await connectDB();
-
 // Health check endpoint
 app.get('/health', (_req, res) => res.json({
   status: 'ok',
@@ -64,7 +61,7 @@ app.use('/api/admin', adminRoutes);
 // Root endpoint
 app.get('/', (_req, res) => {
   res.json({
-    message: 'AgriTradeX API - Pakistan\'s Premier Livestock Marketplace',
+    message: "AgriTradeX API - Pakistan's Premier Livestock Marketplace",
     version: '1.0.0',
     status: 'running',
     endpoints: {
@@ -77,7 +74,7 @@ app.get('/', (_req, res) => {
   });
 });
 
-// Fallback logic
+// Fallback 404
 app.use((_req, res) => res.status(404).json({ message: 'Route not found.' }));
 
 // Global error handler
@@ -90,12 +87,15 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-// Export the app for Vercel
-export default app;
-
-if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+// Start server
+const start = async () => {
+  await connectDB();
   app.listen(PORT, () => {
     console.log(`🚀 AgriTradeX API running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
   });
-}
+};
+
+start();
+
+export default app;
