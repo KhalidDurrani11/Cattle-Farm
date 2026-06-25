@@ -16,7 +16,7 @@ import adminRoutes from './routes/admin.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Fully open CORS to allow any Netlify domain to connect
+// Fully open CORS
 app.use(cors({
   origin: true,
   credentials: true,
@@ -26,7 +26,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// --- SECURITY & OPTIMIZATION MIDDLEWARES ---
+// Security & Optimization
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(mongoSanitize());
@@ -44,11 +44,12 @@ const generalLimiter = rateLimit({
 });
 app.use('/api', generalLimiter);
 
-// Health check endpoint
+// Health check — always works, even before DB connects
 app.get('/health', (_req, res) => res.json({
   status: 'ok',
   timestamp: new Date().toISOString(),
   uptime: process.uptime(),
+  mongo_uri_set: !!process.env.MONGO_URI,
 }));
 
 // Routes
@@ -64,38 +65,32 @@ app.get('/', (_req, res) => {
     message: "AgriTradeX API - Pakistan's Premier Livestock Marketplace",
     version: '1.0.0',
     status: 'running',
-    endpoints: {
-      auth: '/api/auth',
-      cattle: '/api/cattle',
-      users: '/api/users',
-      upload: '/api/upload',
-      admin: '/api/admin',
-    },
   });
 });
 
-// Fallback 404
+// 404
 app.use((_req, res) => res.status(404).json({ message: 'Route not found.' }));
 
 // Global error handler
 app.use((err, _req, res, _next) => {
   console.error('Unhandled error:', err);
-  const isProduction = process.env.NODE_ENV === 'production';
-  res.status(500).json({
-    message: isProduction ? 'Internal server error.' : err.message || 'Internal server error.',
-    ...(isProduction ? {} : { stack: err.stack }),
-  });
+  res.status(500).json({ message: 'Internal server error.' });
 });
 
-// Start server
-const start = async () => {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`🚀 AgriTradeX API running on port ${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  });
-};
+// ✅ IMPORTANT: Bind to port FIRST so Render detects it,
+// then connect to MongoDB in the background
+app.listen(PORT, () => {
+  console.log(`🚀 AgriTradeX API running on port ${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔗 MONGO_URI set: ${!!process.env.MONGO_URI}`);
 
-start();
+  // Connect to DB after server starts
+  connectDB().then(() => {
+    console.log('✅ Database connected successfully');
+  }).catch((err) => {
+    console.error('❌ Database connection failed:', err.message);
+    // Don't exit — let the server keep running so Render doesn't kill it
+  });
+});
 
 export default app;
