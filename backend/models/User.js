@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.index({ email: 1 });
+// email index is already created by unique:true in the schema above
 userSchema.index({ role: 1 });
 userSchema.index({ verificationStatus: 1 });
 userSchema.index({ location: 'text', district: 'text', province: 'text' });
