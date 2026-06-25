@@ -47,6 +47,8 @@ export default function FarmerDashboard({
         return <span className="badge bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">Sold ✓</span>;
       case 'reserved':
         return <span className="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">Reserved</span>;
+      case 'pending':
+        return <span className="badge bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 font-semibold">Pending Approval</span>;
       default:
         return <span className="badge bg-gray-100 text-gray-700">{status}</span>;
     }

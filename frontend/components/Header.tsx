@@ -73,6 +73,7 @@ export default function Header() {
           {navLink('/', 'Home')}
           {navLink('/marketplace', 'Marketplace')}
           {user && navLink('/dashboard', 'Dashboard')}
+          {user && user.role === 'admin' && navLink('/admin', 'Admin Panel')}
         </div>
 
         {/* Actions */}
@@ -121,7 +122,12 @@ export default function Header() {
                   <Link href="/dashboard?tab=profile" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">
                     <User className="w-4 h-4" /> Profile
                   </Link>
-                  {user.verificationStatus !== 'verified' && (
+                  {user.role === 'admin' && (
+                    <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-red-600 font-semibold">
+                      <ShieldCheck className="w-4 h-4 text-red-500" /> Admin Panel
+                    </Link>
+                  )}
+                  {user.verificationStatus !== 'verified' && user.role !== 'admin' && (
                     <Link href="/dashboard?tab=verification" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-amber-600">
                       <ShieldCheck className="w-4 h-4" /> Get Verified
                     </Link>
@@ -175,6 +181,9 @@ export default function Header() {
             <Link href="/marketplace" className="block py-2" onClick={() => setMenuOpen(false)}>Marketplace</Link>
             {user && (
               <Link href="/dashboard" className="block py-2" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            )}
+            {user && user.role === 'admin' && (
+              <Link href="/admin" className="block py-2 text-red-600 font-semibold" onClick={() => setMenuOpen(false)}>Admin Panel</Link>
             )}
             {user ? (
               <button onClick={handleLogout} className="w-full btn-primary flex items-center justify-center gap-2">

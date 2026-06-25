@@ -35,7 +35,7 @@ const cattleSchema = new mongoose.Schema({
   province: { type: String, enum: ['Punjab', 'Sindh', 'KPK', 'Balochistan', 'Gilgit-Baltistan', 'Islamabad', ''], default: '' },
   description: { type: String, trim: true, default: '' },
   images: [{ type: String }],
-  status: { type: String, enum: ['available', 'sold', 'reserved', 'pending', 'unavailable'], default: 'available' },
+  status: { type: String, enum: ['available', 'sold', 'reserved', 'pending', 'unavailable'], default: 'pending' },
   isFeatured: { type: Boolean, default: false },
   views: { type: Number, default: 0 },
   inquiries: { type: Number, default: 0 },

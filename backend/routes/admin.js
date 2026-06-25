@@ -190,7 +190,135 @@ router.get('/stats', authMiddleware, adminMiddleware, async (req, res) => {
       recentUsers,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error.' });
+    res.status(500).json({ message: 'Server error fetching stats.' });
+  }
+});
+
+// Middleware to check strictly admin role (Vets cannot ban/moderate users/delete listings)
+const strictAdminMiddleware = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied. Administrator only.' });
+  }
+  next();
+};
+
+// GET /api/admin/pending-listings — get pending listings (status: 'pending')
+router.get('/pending-listings', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const listings = await Cattle.find({ status: 'pending' })
+      .populate('sellerId', 'name email phone location');
+    res.json(listings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching pending listings.' });
+  }
+});
+
+// PUT /api/admin/listings/:id/approve — approve a listing (set status to available)
+router.put('/listings/:id/approve', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const cattle = await Cattle.findById(req.params.id);
+    if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
+
+    cattle.status = 'available';
+    await cattle.save();
+
+    // Notify seller
+    const Notification = (await import('../models/Notification.js')).default;
+    await Notification.create({
+      userId: cattle.sellerId,
+      title: 'Listing Approved',
+      message: `Your cattle listing "${cattle.name}" has been approved and is now live on the marketplace.`,
+      type: 'success',
+    });
+
+    res.json({ message: 'Listing approved successfully.', cattle });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error approving listing.' });
+  }
+});
+
+// PUT /api/admin/listings/:id/reject — reject a listing (set status to unavailable)
+router.put('/listings/:id/reject', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const cattle = await Cattle.findById(req.params.id);
+    if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
+
+    cattle.status = 'unavailable';
+    await cattle.save();
+
+    // Notify seller
+    const Notification = (await import('../models/Notification.js')).default;
+    await Notification.create({
+      userId: cattle.sellerId,
+      title: 'Listing Moderation',
+      message: `Your cattle listing "${cattle.name}" was rejected. Reason: ${reason || 'Inappropriate details.'}`,
+      type: 'error',
+    });
+
+    res.json({ message: 'Listing rejected.', cattle });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error rejecting listing.' });
+  }
+});
+
+// GET /api/admin/users — list all users
+router.get('/users', authMiddleware, strictAdminMiddleware, async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ joinedAt: -1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching users.' });
+  }
+});
+
+// PUT /api/admin/users/:id/ban — ban user
+router.put('/users/:id/ban', authMiddleware, strictAdminMiddleware, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Cannot ban an admin user.' });
+    }
+
+    user.isBanned = true;
+    user.banReason = reason || 'Violation of terms.';
+    await user.save();
+
+    res.json({ message: 'User banned successfully.', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error banning user.' });
+  }
+});
+
+// PUT /api/admin/users/:id/unban — unban user
+router.put('/users/:id/unban', authMiddleware, strictAdminMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    user.isBanned = false;
+    user.banReason = undefined;
+    await user.save();
+
+    res.json({ message: 'User unbanned successfully.', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error unbanning user.' });
+  }
+});
+
+// DELETE /api/admin/listings/:id — admin force delete listing
+router.delete('/listings/:id', authMiddleware, strictAdminMiddleware, async (req, res) => {
+  try {
+    const cattle = await Cattle.findById(req.params.id);
+    if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
+
+    await cattle.deleteOne();
+    res.json({ message: 'Listing deleted by admin successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error deleting listing.' });
   }
 });
 

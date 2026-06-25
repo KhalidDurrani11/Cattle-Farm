@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema({
   lastActive: { type: Date, default: Date.now },
   isBanned: { type: Boolean, default: false },
   banReason: { type: String },
+  loginOtp: { type: String, default: '' },
+  loginOtpExpiresAt: { type: Date },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cattle' }],
   notificationPreferences: {
     email: { type: Boolean, default: true },

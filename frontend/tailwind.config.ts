@@ -60,8 +60,8 @@ const config: Config = {
         }
       },
       fontFamily: {
-        'sans': ['"Inter"', 'sans-serif'],
-        'serif': ['"Noto Serif"', 'serif'],
+        'sans': ['var(--font-inter)', 'sans-serif'],
+        'serif': ['var(--font-playfair)', 'serif'],
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',

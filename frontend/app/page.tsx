@@ -21,14 +21,14 @@ export default function HomePage() {
         
         <div className="relative z-20 text-center px-5 sm:px-8 max-w-4xl mx-auto mt-8 md:mt-0 w-full">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1E4620]/90 backdrop-blur-md text-white font-medium text-[13px] sm:text-sm mb-6 shadow-lg border border-white/20 animate-float">
-            <Leaf className="w-4 h-4 text-[#8FBC8F]" /> The Premier Livestock Marketplace
+            <Leaf className="w-4 h-4 text-[#8FBC8F]" /> Official Trade Platform
           </span>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-5 leading-[1.1] text-white drop-shadow-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            Empowering Pakistan's <br/>
-            <span className="text-[#8FBC8F] font-serif italic drop-shadow-lg">Agricultural Heritage.</span>
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1] text-white drop-shadow-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            Pakistan's Premier <br/>
+            <span className="text-[#8FBC8F] font-serif italic drop-shadow-lg">Livestock Exchange.</span>
           </h1>
-          <p className="font-sans text-base sm:text-lg md:text-xl text-[#F5F5DC] max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed font-medium drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-            Connect directly with verified farmers, access pristine livestock genetics, and secure your transactions across all provinces with pure transparency.
+          <p className="font-sans text-base sm:text-lg md:text-xl text-[#F5F5DC] max-w-3xl mx-auto mb-10 leading-relaxed font-normal drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            A secure, direct-to-farm trading platform facilitating transaction security, authenticated seller documentation, and genetic lineage transparency nationwide.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center animate-fade-in-up w-full sm:w-auto" style={{ animationDelay: '600ms' }}>
             <Link href="/marketplace" className="w-full sm:w-auto bg-[#1E4620] hover:bg-[#153316] animate-pulse-glow shadow-xl text-white px-8 py-4 sm:py-3.5 text-base sm:text-lg font-bold rounded-xl flex items-center justify-center gap-2 group transition-all">

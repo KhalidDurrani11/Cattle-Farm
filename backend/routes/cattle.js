@@ -187,7 +187,7 @@ router.post('/', authMiddleware, async (req, res) => {
       name, breed, category, price, originalPrice, age, weight, gender,
       location, tehsil, district, province, description, images, healthNotes, tags: tags || [],
       sellerId: req.user.userId,
-      status: 'available',
+      status: 'pending',
     });
 
     await cattle.save();

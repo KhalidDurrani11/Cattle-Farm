@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { updateCattle, uploadImage } from '@/lib/api';
 import { Cattle } from '@/types';
 import { X, Upload, Trash2, Plus } from 'lucide-react';
+import { PROVINCES, CITIES_BY_PROVINCE } from '@/lib/cities';
 
 interface Props {
   cattle: Cattle;
@@ -13,7 +14,6 @@ interface Props {
 
 const CATEGORIES = ['Bull', 'Cow', 'Calf', 'Buffalo', 'Goat', 'Sheep', 'Other'];
 const BREEDS = ['Sahiwal', 'Cholistani', 'Thari', 'Dajal', 'Kankrej', 'Nili-Ravi', 'Murrah', 'Beetal', 'Dera Din Panah', 'Friesian', 'Crossbreed', 'Other'];
-const PROVINCES = ['Punjab', 'Sindh', 'KPK', 'Balochistan', 'Gilgit-Baltistan', 'Islamabad'];
 const STATUS_OPTIONS = [
   { value: 'available', label: 'Available' },
   { value: 'reserved', label: 'Reserved' },
@@ -51,10 +51,25 @@ export default function EditCattleModal({ cattle, onClose, onSuccess }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-    }));
+    if (name === 'province') {
+      setForm(prev => ({
+        ...prev,
+        province: value,
+        location: '',
+        district: ''
+      }));
+    } else if (name === 'location') {
+      setForm(prev => ({
+        ...prev,
+        location: value,
+        district: value
+      }));
+    } else {
+      setForm(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      }));
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -298,52 +313,15 @@ export default function EditCattleModal({ cattle, onClose, onSuccess }: Props) {
           <div className="border-t border-gray-100 dark:border-slate-700 pt-6">
             <h3 className="font-medium text-gray-900 dark:text-white mb-4">Location</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Village/Area *
-                </label>
-                <input
-                  name="location"
-                  value={form.location}
-                  onChange={handleChange}
-                  required
-                  className="input-field"
-                  placeholder="e.g. Bhalwal, Sargodha"
-                />
-              </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Tehsil
-                </label>
-                <input
-                  name="tehsil"
-                  value={form.tehsil}
-                  onChange={handleChange}
-                  className="input-field"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  District
-                </label>
-                <input
-                  name="district"
-                  value={form.district}
-                  onChange={handleChange}
-                  className="input-field"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Province
+                  Province *
                 </label>
                 <select
                   name="province"
                   value={form.province}
                   onChange={handleChange}
+                  required
                   className="input-field"
                 >
                   <option value="">Select province</option>
@@ -351,6 +329,38 @@ export default function EditCattleModal({ cattle, onClose, onSuccess }: Props) {
                     <option key={p} value={p}>{p}</option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  City/Location *
+                </label>
+                <select
+                  name="location"
+                  value={form.location}
+                  onChange={handleChange}
+                  required
+                  disabled={!form.province}
+                  className="input-field"
+                >
+                  <option value="">Select City</option>
+                  {form.province && CITIES_BY_PROVINCE[form.province]?.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Tehsil (Optional)
+                </label>
+                <input
+                  name="tehsil"
+                  value={form.tehsil}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="e.g. Model Town"
+                />
               </div>
 
               <div>

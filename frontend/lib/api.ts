@@ -1,4 +1,4 @@
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 async function handleResponse<T>(res: Response): Promise<T> {
   const data = await res.json();
@@ -15,6 +15,14 @@ export async function loginUser(email: string, password: string) {
   const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
+  });
+  return handleResponse<{ token?: string; user?: any; requiresOtp?: boolean; message?: string; email?: string }>(res);
+}
+
+export async function verifyLoginOtp(email: string, otp: string) {
+  const res = await fetch(`${API_BASE}/api/auth/verify-login-otp`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, otp }),
   });
   return handleResponse<{ token: string; user: any }>(res);
 }
@@ -225,7 +233,7 @@ export async function getAdminStats(token: string) {
   const res = await fetch(`${API_BASE}/api/admin/stats`, {
     headers: authHeaders(token),
   });
-  return handleResponse(res);
+  return handleResponse<any>(res);
 }
 
 export async function getPendingUserVerifications(token: string) {
@@ -270,6 +278,71 @@ export async function rejectCattle(cattleId: string, reason: string, token: stri
   const res = await fetch(`${API_BASE}/api/admin/cattle/${cattleId}/reject`, {
     method: 'PUT', headers: authHeaders(token),
     body: JSON.stringify({ reason }),
+  });
+  return handleResponse(res);
+}
+
+export async function socialLogin(email: string, name: string, provider: string) {
+  const res = await fetch(`${API_BASE}/api/auth/social-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, name, provider }),
+  });
+  return handleResponse<{ token: string; user: any }>(res);
+}
+
+export async function getPendingListings(token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/pending-listings`, {
+    headers: authHeaders(token),
+  });
+  return handleResponse<any[]>(res);
+}
+
+export async function approveListing(id: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/listings/${id}/approve`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+  });
+  return handleResponse(res);
+}
+
+export async function rejectListing(id: string, reason: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/listings/${id}/reject`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ reason }),
+  });
+  return handleResponse(res);
+}
+
+export async function getAllUsers(token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/users`, {
+    headers: authHeaders(token),
+  });
+  return handleResponse<any[]>(res);
+}
+
+export async function banUser(userId: string, reason: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/users/${userId}/ban`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ reason }),
+  });
+  return handleResponse(res);
+}
+
+export async function unbanUser(userId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/users/${userId}/unban`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+  });
+  return handleResponse(res);
+}
+
+export async function adminDeleteListing(id: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/admin/listings/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
   });
   return handleResponse(res);
 }

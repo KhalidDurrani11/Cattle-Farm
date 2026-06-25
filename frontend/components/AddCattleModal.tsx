@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { createCattle, uploadImage } from '@/lib/api';
 import { Loader2, X, Plus, Trash2 } from 'lucide-react';
+import { PROVINCES, CITIES_BY_PROVINCE } from '@/lib/cities';
 
 interface Props {
   onClose: () => void;
@@ -11,7 +12,6 @@ interface Props {
 
 const CATEGORIES = ['Bull', 'Cow', 'Calf', 'Buffalo', 'Goat', 'Sheep', 'Other'];
 const BREEDS = ['Sahiwal', 'Cholistani', 'Thari', 'Dajal', 'Kankrej', 'Nili-Ravi', 'Murrah', 'Beetal', 'Dera Din Panah', 'Friesian', 'Crossbreed', 'Other'];
-const PROVINCES = ['Punjab', 'Sindh', 'KPK', 'Balochistan', 'Gilgit-Baltistan', 'Islamabad'];
 
 export default function AddCattleModal({ onClose, onSuccess }: Props) {
   const { token } = useAuth();
@@ -40,7 +40,14 @@ export default function AddCattleModal({ onClose, onSuccess }: Props) {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    if (name === 'province') {
+      setForm(p => ({ ...p, province: value, location: '', district: '' }));
+    } else if (name === 'location') {
+      setForm(p => ({ ...p, location: value, district: value }));
+    } else {
+      setForm(p => ({ ...p, [name]: value }));
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,14 +173,19 @@ export default function AddCattleModal({ onClose, onSuccess }: Props) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Location *</label>
-              <input name="location" value={form.location} onChange={handleChange} required className="input-field" />
+              <label className="block text-sm font-medium mb-1">Province *</label>
+              <select name="province" value={form.province} onChange={handleChange} required className="input-field">
+                <option value="">Select Province</option>
+                {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Province</label>
-              <select name="province" value={form.province} onChange={handleChange} className="input-field">
-                <option value="">Select</option>
-                {PROVINCES.map(p => <option key={p}>{p}</option>)}
+              <label className="block text-sm font-medium mb-1">City/Location *</label>
+              <select name="location" value={form.location} onChange={handleChange} required className="input-field" disabled={!form.province}>
+                <option value="">Select City</option>
+                {form.province && CITIES_BY_PROVINCE[form.province]?.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
               </select>
             </div>
           </div>
