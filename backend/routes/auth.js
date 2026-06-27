@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_secret_key_change_in_production';
+const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_jwt_super_secret_2024_pk_cattle_marketplace_khalid';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

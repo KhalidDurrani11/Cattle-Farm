@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_secret_key_change_in_production';
+const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_jwt_super_secret_2024_pk_cattle_marketplace_khalid';
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;

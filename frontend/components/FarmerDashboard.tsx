@@ -74,13 +74,13 @@ export default function FarmerDashboard({
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-primary-800 to-primary-600 rounded-2xl p-6 text-white">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-primary-800 to-primary-600 rounded-2xl p-5 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-bold">Farmer Dashboard</h2>
-            <p className="text-primary-100 mt-1">Manage your livestock listings and connect with buyers</p>
+            <h2 className="text-xl font-bold">Farmer Dashboard</h2>
+            <p className="text-primary-100 mt-1 text-sm">Manage your livestock listings and connect with buyers</p>
           </div>
-          <button onClick={onAddNew} className="btn-amber flex items-center gap-2">
+          <button onClick={onAddNew} className="btn-amber flex items-center gap-2 self-start sm:self-auto">
             <Plus className="w-4 h-4" /> Add New Cattle
           </button>
         </div>
@@ -138,7 +138,7 @@ export default function FarmerDashboard({
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+      <div className="flex overflow-x-auto gap-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
         {[
           { id: 'listings', label: 'My Listings', icon: Package },
           { id: 'inquiries', label: `Inquiries (${pendingInquiries?.length || 0})`, icon: MessageCircle },
@@ -147,7 +147,7 @@ export default function FarmerDashboard({
           <button
             key={id}
             onClick={() => setActiveTab(id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               activeTab === id
                 ? 'bg-white dark:bg-slate-700 shadow text-primary-600 dark:text-primary-400'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50'

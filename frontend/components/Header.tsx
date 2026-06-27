@@ -63,8 +63,9 @@ export default function Header() {
           <div className="bg-[#1E4620]/10 group-hover:bg-[#1E4620]/20 transition-colors p-2 rounded-xl text-[#1E4620]">
             <Tractor className="w-6 h-6" />
           </div>
-          <span className="text-xl font-black tracking-tight text-[#1E4620] dark:text-[#8FBC8F]">
-            Cattle Farm Trading
+          <span className="text-base sm:text-xl font-black tracking-tight text-[#1E4620] dark:text-[#8FBC8F] leading-tight">
+            <span className="hidden sm:inline">Cattle Farm Trading</span>
+            <span className="sm:hidden">CFT</span>
           </span>
         </Link>
 
