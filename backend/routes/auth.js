@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) return res.status(400).json({ message: 'An account with this email already exists.' });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       name,
       email: email.toLowerCase(),
@@ -135,9 +135,11 @@ router.post('/login', async (req, res) => {
       `,
     };
 
-    transporter.sendMail(mailOptions).catch(emailError => {
-      console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message);
-    });
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (emailError: any) {
+      console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
+    }
 
     res.json({
       message: 'OTP verification code sent to your email.',
@@ -315,9 +317,11 @@ router.post('/forgot-password', async (req, res) => {
       `,
     };
 
-    transporter.sendMail(mailOptions).catch(emailError => {
-      console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message);
-    });
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (emailError: any) {
+      console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
+    }
 
     res.json({
       message: 'Password reset OTP sent to your email.',
