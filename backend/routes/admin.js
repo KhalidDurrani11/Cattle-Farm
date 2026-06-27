@@ -5,13 +5,42 @@ import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 
+import Admin from '../models/Admin.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_jwt_super_secret_2024_pk_cattle_marketplace_khalid';
+
 // Middleware to check admin role
 const adminMiddleware = (req, res, next) => {
-  if (req.user.role !== 'admin' && req.user.role !== 'vet') {
+  if (req.user.role !== 'admin' && req.user.role !== 'vet' && req.user.role !== 'superadmin') {
     return res.status(403).json({ message: 'Access denied. Admin/Vet only.' });
   }
   next();
 };
+
+// POST /api/admin/login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ message: 'Email and password required.' });
+
+    const admin = await Admin.findOne({ email: email.toLowerCase() });
+    if (!admin) return res.status(400).json({ message: 'Invalid credentials.' });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials.' });
+
+    const token = jwt.sign({ userId: admin._id, role: 'superadmin' }, JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({
+      token,
+      admin: { id: admin._id, email: admin.email, role: 'superadmin' },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error during admin login.' });
+  }
+});
 
 // GET /api/admin/pending-verifications — get pending user verifications
 router.get('/pending-verifications', authMiddleware, adminMiddleware, async (req, res) => {
@@ -196,7 +225,7 @@ router.get('/stats', authMiddleware, adminMiddleware, async (req, res) => {
 
 // Middleware to check strictly admin role (Vets cannot ban/moderate users/delete listings)
 const strictAdminMiddleware = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
     return res.status(403).json({ message: 'Access denied. Administrator only.' });
   }
   next();

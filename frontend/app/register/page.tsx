@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { registerUser } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LanguageContext';
-import { Tractor } from 'lucide-react';
+import { Tractor, Eye, EyeOff } from 'lucide-react';
 import { PROVINCES, CITIES_BY_PROVINCE } from '@/lib/cities';
 
 export default function RegisterPage() {
@@ -20,6 +20,7 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -150,7 +151,12 @@ export default function RegisterPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">{t('reg_pass')} *</label>
-              <input name="password" type="password" value={form.password} onChange={handleChange} required className="input-field ltr-only" placeholder="••••••••" minLength={6} />
+              <div className="relative">
+                <input name="password" type={showPassword ? "text" : "password"} value={form.password} onChange={handleChange} required className="input-field ltr-only w-full pr-10" placeholder="••••••••" minLength={6} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-earth-500 hover:text-foreground">
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

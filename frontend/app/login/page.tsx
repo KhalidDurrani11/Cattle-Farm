@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { loginUser, verifyLoginOtp } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LanguageContext';
-import { Tractor, Loader2 } from 'lucide-react';
+import { Tractor, Loader2, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -104,7 +105,7 @@ export default function LoginPage() {
              <Tractor className="w-10 h-10" />
           </div>
           <h1 className="font-serif text-3xl font-bold text-foreground mt-4">{t('login_title')}</h1>
-          <p className="font-sans text-earth-500 mt-2">AgriTradeX — Pakistan Cattle Marketplace</p>
+          <p className="font-sans text-earth-500 mt-2">Cattle Farm Trading — Pakistan Cattle Marketplace</p>
         </div>
 
         <div className="glass-card rounded-2xl p-8 shadow-xl bg-white/95 dark:bg-[#181b18]/95 border border-line">
@@ -131,10 +132,15 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">{t('login_pass')} *</label>
-                  <input
-                    type="password" value={password} onChange={e => setPassword(e.target.value)}
-                    required className="input-field ltr-only" placeholder="••••••••"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+                      required className="input-field ltr-only w-full pr-10" placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-earth-500 hover:text-foreground">
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                   <div className="text-right mt-1">
                     <Link href="/forgot-password" className="text-sm text-primary hover:underline font-medium">Forgot Password?</Link>
                   </div>

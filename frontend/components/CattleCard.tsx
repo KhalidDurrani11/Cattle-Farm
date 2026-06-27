@@ -47,7 +47,7 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!seller?.phone) return;
-    const txt = `Hi, I'm interested in your ${cattle.breed} ${cattle.category} (PKR ${cattle.price.toLocaleString()}) on AgriTradeX.`;
+    const txt = `Hi, I'm interested in your ${cattle.breed} ${cattle.category} (PKR ${cattle.price.toLocaleString()}) on Cattle Farm Trading.`;
     const phone = seller.phone.replace(/\D/g, '');
     window.open(`https://wa.me/${phone.startsWith('92') ? phone : '92' + phone}?text=${encodeURIComponent(txt)}`, '_blank');
   };

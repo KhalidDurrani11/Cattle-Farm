@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     header: {
-      agriTradeX: 'AgriTradeX',
+      'Cattle Farm Trading': 'Cattle Farm Trading',
       home: 'Home',
       marketplace: 'Marketplace',
       dashboard: 'Dashboard',
@@ -24,7 +24,7 @@ export const translations = {
       newsletter: 'Subscribe to our newsletter.',
       yourEmail: 'Your email',
       go: 'Go',
-      copyright: '© {year} AgriTradeX. All rights reserved.',
+      copyright: '© {year} Cattle Farm Trading. All rights reserved.',
     },
     home: {
       heroTitle: 'Buy & Sell Verified Cattle Online',
@@ -109,7 +109,7 @@ export const translations = {
   },
   ur: {
     header: {
-      agriTradeX: 'ایگری ٹریڈ ایکس',
+      'Cattle Farm Trading': 'Cattle Farm Trading',
       home: 'صفحہ اول',
       marketplace: 'مارکیٹ پلیس',
       dashboard: 'ڈیش بورڈ',
@@ -132,7 +132,7 @@ export const translations = {
       newsletter: 'ہمارے نیوز لیٹر کو سبسکرائب کریں۔',
       yourEmail: 'آپ کا ای میل',
       go: 'جائیں',
-      copyright: '© {year} ایگری ٹریڈ ایکس۔ جملہ حقوق محفوظ ہیں۔',
+      copyright: '© {year} Cattle Farm Trading۔ جملہ حقوق محفوظ ہیں۔',
     },
     home: {
       heroTitle: 'آن لائن تصدیق شدہ مویشی خریدیں اور بیچیں',

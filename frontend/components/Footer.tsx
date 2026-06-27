@@ -13,7 +13,7 @@ export default function Footer() {
             <div className="bg-white/20 p-1.5 rounded-lg text-white">
               <Tractor className="w-5 h-5" />
             </div>
-            <span className="font-serif text-xl font-bold tracking-tight text-white">AgriTrade<span className="text-[#8FBC8F] italic">X</span></span>
+            <span className="font-serif text-xl font-bold tracking-tight text-white">Cattle Farm Trading</span>
           </div>
           <p className="text-[#D7CCC8] text-sm mb-6 leading-relaxed">
             Pakistan's premier digital marketplace for authentic, verified, and high-quality livestock. Bridging the gap between rural farmers and national buyers.
@@ -53,7 +53,7 @@ export default function Footer() {
                <Phone className="w-4 h-4 text-[#8FBC8F]" /> +92 300 000 0000
              </li>
              <li className="flex items-center gap-3 text-[#D7CCC8]">
-               <Mail className="w-4 h-4 text-[#8FBC8F]" /> support@agritradex.pk
+               <Mail className="w-4 h-4 text-[#8FBC8F]" /> support@cattlefarmtrading.pk
              </li>
              <li className="flex items-center gap-3 text-[#D7CCC8]">
                <MapPin className="w-4 h-4 text-[#8FBC8F]" /> Lahore, Pakistan
@@ -64,7 +64,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#292524] flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-[#F5F5DC] text-xs font-medium">© {new Date().getFullYear()} AgriTradeX. All rights reserved.</p>
+        <p className="text-[#F5F5DC] text-xs font-medium">© {new Date().getFullYear()} Cattle Farm Trading. All rights reserved.</p>
         <div className="flex items-center gap-6 text-xs text-[#F5F5DC]">
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

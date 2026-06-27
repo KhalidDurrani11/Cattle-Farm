@@ -114,26 +114,20 @@ router.post('/login', async (req, res) => {
 
     console.log(`[AUTH] 🔑 Login Verification Code for ${user.email} is: ${otp}`);
 
-    // Send OTP via email
+    // Send OTP via email asynchronously (fire-and-forget)
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
       to: user.email,
-      subject: 'Your Login Verification Code - AgriTradeX',
+      subject: 'Your Login Verification Code - Cattle Farm Trading',
       text: `Your login verification code is: ${otp}\nThis code is valid for 10 minutes.`,
     };
 
-    let mailSent = true;
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (emailError) {
+    transporter.sendMail(mailOptions).catch(emailError => {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message);
-      mailSent = false;
-    }
+    });
 
     res.json({
-      message: mailSent 
-        ? 'OTP sent to your email.' 
-        : 'OTP verification code generated (printed to server console for local testing).',
+      message: 'OTP verification code sent to your email.',
       requiresOtp: true,
       email: user.email,
     });
@@ -291,22 +285,16 @@ router.post('/forgot-password', async (req, res) => {
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
       to: user.email,
-      subject: 'Password Reset Code - AgriTradeX',
+      subject: 'Password Reset Code - Cattle Farm Trading',
       text: `Your password reset code is: ${otp}\nThis code is valid for 15 minutes.`,
     };
 
-    let mailSent = true;
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (emailError) {
+    transporter.sendMail(mailOptions).catch(emailError => {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message);
-      mailSent = false;
-    }
+    });
 
     res.json({
-      message: mailSent 
-        ? 'Password reset OTP sent to your email.' 
-        : 'Password reset OTP generated (printed to server console for local testing).',
+      message: 'Password reset OTP sent to your email.',
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });

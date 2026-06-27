@@ -10,7 +10,7 @@ export default function ContactPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="font-serif text-4xl font-bold text-foreground mb-4">Contact Us</h1>
-          <p className="text-earth-500 text-lg">Get in touch with the AgriTradeX team</p>
+          <p className="text-earth-500 text-lg">Get in touch with the Cattle Farm Trading team</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -33,7 +33,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm text-earth-500">Email</p>
-                  <p className="font-medium text-foreground">support@agritradex.pk</p>
+                  <p className="font-medium text-foreground">support@cattlefarmtrading.pk</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">

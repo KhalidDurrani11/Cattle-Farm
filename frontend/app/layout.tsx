@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
 
 export const metadata: Metadata = {
-  title: 'AgriTradeX — Pakistan Cattle Marketplace',
+  title: 'Cattle Farm Trading — Pakistan Cattle Marketplace',
   description: "Pakistan's #1 online cattle marketplace. Buy and sell bulls, cows, buffaloes, and goats. Trusted by thousands of farmers across Pakistan.",
   keywords: 'cattle, mawashi, Pakistan, buy cow, sell bull, buffalo, goat, farmer, kissan',
 };
