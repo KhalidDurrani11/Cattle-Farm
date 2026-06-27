@@ -158,6 +158,7 @@ export default function DashboardPage() {
             { type: 'cnic', url: `cnic-front-${digits}` },
             { type: 'cnic', url: `cnic-back-${digits}` },
           ],
+          cnic: digits,
         }),
       });
       const data = await res.json();

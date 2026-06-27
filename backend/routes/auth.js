@@ -236,10 +236,9 @@ router.put('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// POST /api/auth/verification - Submit verification documents
 router.post('/verification', authMiddleware, async (req, res) => {
   try {
-    const { documents } = req.body; // Array of { type, url }
+    const { documents, cnic } = req.body; // Array of { type, url }, and string cnic
 
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return res.status(400).json({ message: 'At least one document is required.' });
@@ -247,6 +246,10 @@ router.post('/verification', authMiddleware, async (req, res) => {
 
     const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    if (cnic) {
+      user.cnic = cnic;
+    }
 
     // Add new documents
     documents.forEach(doc => {
