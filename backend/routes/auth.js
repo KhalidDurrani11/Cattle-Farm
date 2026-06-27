@@ -14,8 +14,8 @@ const smtpPass = process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.replace(/
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false, // use TLS
   auth: {
     user: smtpEmail,
     pass: smtpPass,
