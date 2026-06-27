@@ -116,10 +116,20 @@ router.post('/login', async (req, res) => {
 
     // Send OTP via email asynchronously (fire-and-forget)
     const mailOptions = {
-      from: process.env.SMTP_EMAIL,
+      from: `"Cattle Farm Trading" <${process.env.SMTP_EMAIL}>`,
       to: user.email,
       subject: 'Your Login Verification Code - Cattle Farm Trading',
       text: `Your login verification code is: ${otp}\nThis code is valid for 10 minutes.`,
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
+          <h2 style="color:#1E4620;margin-bottom:8px;">Login Verification</h2>
+          <p style="color:#555;">Use the code below to complete your login to <strong>Cattle Farm Trading</strong>.</p>
+          <div style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#1E4620;background:#f0f7f0;padding:20px;text-align:center;border-radius:8px;margin:24px 0;">${otp}</div>
+          <p style="color:#888;font-size:13px;">This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+          <p style="color:#aaa;font-size:12px;">Cattle Farm Trading — Pakistan's Premier Livestock Exchange</p>
+        </div>
+      `,
     };
 
     transporter.sendMail(mailOptions).catch(emailError => {
@@ -283,10 +293,20 @@ router.post('/forgot-password', async (req, res) => {
     console.log(`[AUTH] 🔑 Password Reset Code for ${user.email} is: ${otp}`);
 
     const mailOptions = {
-      from: process.env.SMTP_EMAIL,
+      from: `"Cattle Farm Trading" <${process.env.SMTP_EMAIL}>`,
       to: user.email,
       subject: 'Password Reset Code - Cattle Farm Trading',
       text: `Your password reset code is: ${otp}\nThis code is valid for 15 minutes.`,
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
+          <h2 style="color:#1E4620;margin-bottom:8px;">Password Reset</h2>
+          <p style="color:#555;">Use the code below to reset your password on <strong>Cattle Farm Trading</strong>.</p>
+          <div style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#1E4620;background:#f0f7f0;padding:20px;text-align:center;border-radius:8px;margin:24px 0;">${otp}</div>
+          <p style="color:#888;font-size:13px;">This code expires in <strong>15 minutes</strong>. If you did not request this, ignore this email.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+          <p style="color:#aaa;font-size:12px;">Cattle Farm Trading — Pakistan's Premier Livestock Exchange</p>
+        </div>
+      `,
     };
 
     transporter.sendMail(mailOptions).catch(emailError => {
