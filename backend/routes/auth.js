@@ -9,13 +9,16 @@ import nodemailer from 'nodemailer';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+const smtpEmail = process.env.SMTP_EMAIL ? process.env.SMTP_EMAIL.trim() : '';
+const smtpPass = process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.replace(/\s+/g, '') : '';
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD,
+    user: smtpEmail,
+    pass: smtpPass,
   },
 });
 
@@ -116,7 +119,7 @@ router.post('/login', async (req, res) => {
 
     // Send OTP via email asynchronously (fire-and-forget)
     const mailOptions = {
-      from: `"Cattle Farm Trading" <${process.env.SMTP_EMAIL}>`,
+      from: `"Cattle Farm Trading" <${smtpEmail}>`,
       to: user.email,
       subject: 'Your Login Verification Code - Cattle Farm Trading',
       text: `Your login verification code is: ${otp}\nThis code is valid for 10 minutes.`,
@@ -293,7 +296,7 @@ router.post('/forgot-password', async (req, res) => {
     console.log(`[AUTH] 🔑 Password Reset Code for ${user.email} is: ${otp}`);
 
     const mailOptions = {
-      from: `"Cattle Farm Trading" <${process.env.SMTP_EMAIL}>`,
+      from: `"Cattle Farm Trading" <${smtpEmail}>`,
       to: user.email,
       subject: 'Password Reset Code - Cattle Farm Trading',
       text: `Your password reset code is: ${otp}\nThis code is valid for 15 minutes.`,
