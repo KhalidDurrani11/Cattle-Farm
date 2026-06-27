@@ -137,7 +137,7 @@ router.post('/login', async (req, res) => {
 
     try {
       await transporter.sendMail(mailOptions);
-    } catch (emailError: any) {
+    } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
 
@@ -319,7 +319,7 @@ router.post('/forgot-password', async (req, res) => {
 
     try {
       await transporter.sendMail(mailOptions);
-    } catch (emailError: any) {
+    } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
 
