@@ -5,26 +5,28 @@ import User from '../models/User.js';
 import { v2 as cloudinary } from 'cloudinary';
 import authMiddleware from '../middleware/auth.js';
 import { OAuth2Client } from 'google-auth-library';
-import { Resend } from 'resend';
+import * as Brevo from '@getbrevo/brevo';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const resendApiKey = process.env.RESEND_API_KEY || '';
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const brevoApiKey = process.env.BREVO_API_KEY || '';
 
 async function sendEmail({ to, subject, html, text }) {
-  if (!resend) {
-    console.warn('[AUTH] ⚠️ RESEND_API_KEY not set — email not sent.');
+  if (!brevoApiKey) {
+    console.warn('[AUTH] ⚠️ BREVO_API_KEY not set — email not sent.');
     return;
   }
-  const { error } = await resend.emails.send({
-    from: 'Cattle Farm Trading <onboarding@resend.dev>',
-    to,
-    subject,
-    html,
-    text,
-  });
-  if (error) throw new Error(error.message);
+  const apiInstance = new Brevo.TransactionalEmailsApi();
+  apiInstance.authentications['api-key'].apiKey = brevoApiKey;
+
+  const sendSmtpEmail = new Brevo.SendSmtpEmail();
+  sendSmtpEmail.sender = { name: 'Cattle Farm Trading', email: 'kkjan9198@gmail.com' };
+  sendSmtpEmail.to = [{ email: to }];
+  sendSmtpEmail.subject = subject;
+  sendSmtpEmail.htmlContent = html;
+  sendSmtpEmail.textContent = text;
+
+  await apiInstance.sendTransacEmail(sendSmtpEmail);
 }
 
 const router = express.Router();
