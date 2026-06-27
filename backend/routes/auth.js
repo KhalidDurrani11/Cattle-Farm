@@ -9,18 +9,26 @@ import nodemailer from 'nodemailer';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+import dns from 'dns/promises';
+
 const smtpEmail = process.env.SMTP_EMAIL ? process.env.SMTP_EMAIL.trim() : '';
 const smtpPass = process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.replace(/\s+/g, '') : '';
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // use TLS
-  auth: {
-    user: smtpEmail,
-    pass: smtpPass,
-  },
-});
+async function sendEmail(mailOptions) {
+  // Force IPv4 lookup for smtp.gmail.com because Render struggles with IPv6 routing
+  const { address } = await dns.lookup('smtp.gmail.com', { family: 4 });
+  const transporter = nodemailer.createTransport({
+    host: address,
+    port: 587,
+    secure: false, // Use STARTTLS
+    tls: { servername: 'smtp.gmail.com' }, // Required so SSL verification doesn't fail on IP
+    auth: {
+      user: smtpEmail,
+      pass: smtpPass,
+    },
+  });
+  return transporter.sendMail(mailOptions);
+}
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'agritradex_jwt_super_secret_2024_pk_cattle_marketplace_khalid';
@@ -136,7 +144,7 @@ router.post('/login', async (req, res) => {
     };
 
     try {
-      await transporter.sendMail(mailOptions);
+      await sendEmail(mailOptions);
     } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
@@ -318,7 +326,7 @@ router.post('/forgot-password', async (req, res) => {
     };
 
     try {
-      await transporter.sendMail(mailOptions);
+      await sendEmail(mailOptions);
     } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
