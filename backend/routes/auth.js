@@ -5,29 +5,26 @@ import User from '../models/User.js';
 import { v2 as cloudinary } from 'cloudinary';
 import authMiddleware from '../middleware/auth.js';
 import { OAuth2Client } from 'google-auth-library';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-import dns from 'dns/promises';
+const resendApiKey = process.env.RESEND_API_KEY || '';
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-const smtpEmail = process.env.SMTP_EMAIL ? process.env.SMTP_EMAIL.trim() : '';
-const smtpPass = process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.replace(/\s+/g, '') : '';
-
-async function sendEmail(mailOptions) {
-  // Force IPv4 lookup for smtp.gmail.com because Render struggles with IPv6 routing
-  const { address } = await dns.lookup('smtp.gmail.com', { family: 4 });
-  const transporter = nodemailer.createTransport({
-    host: address,
-    port: 587,
-    secure: false, // Use STARTTLS
-    tls: { servername: 'smtp.gmail.com' }, // Required so SSL verification doesn't fail on IP
-    auth: {
-      user: smtpEmail,
-      pass: smtpPass,
-    },
+async function sendEmail({ to, subject, html, text }) {
+  if (!resend) {
+    console.warn('[AUTH] ⚠️ RESEND_API_KEY not set — email not sent.');
+    return;
+  }
+  const { error } = await resend.emails.send({
+    from: 'Cattle Farm Trading <onboarding@resend.dev>',
+    to,
+    subject,
+    html,
+    text,
   });
-  return transporter.sendMail(mailOptions);
+  if (error) throw new Error(error.message);
 }
 
 const router = express.Router();
@@ -125,9 +122,7 @@ router.post('/login', async (req, res) => {
 
     console.log(`[AUTH] 🔑 Login Verification Code for ${user.email} is: ${otp}`);
 
-    // Send OTP via email asynchronously (fire-and-forget)
-    const mailOptions = {
-      from: `"Cattle Farm Trading" <${smtpEmail}>`,
+    const emailPayload = {
       to: user.email,
       subject: 'Your Login Verification Code - Cattle Farm Trading',
       text: `Your login verification code is: ${otp}\nThis code is valid for 10 minutes.`,
@@ -144,7 +139,7 @@ router.post('/login', async (req, res) => {
     };
 
     try {
-      await sendEmail(mailOptions);
+      await sendEmail(emailPayload);
     } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
@@ -308,8 +303,7 @@ router.post('/forgot-password', async (req, res) => {
 
     console.log(`[AUTH] 🔑 Password Reset Code for ${user.email} is: ${otp}`);
 
-    const mailOptions = {
-      from: `"Cattle Farm Trading" <${smtpEmail}>`,
+    const emailPayload = {
       to: user.email,
       subject: 'Password Reset Code - Cattle Farm Trading',
       text: `Your password reset code is: ${otp}\nThis code is valid for 15 minutes.`,
@@ -326,7 +320,7 @@ router.post('/forgot-password', async (req, res) => {
     };
 
     try {
-      await sendEmail(mailOptions);
+      await sendEmail(emailPayload);
     } catch (emailError) {
       console.error('[AUTH] ⚠️ Email delivery failed:', emailError.message || emailError);
     }
