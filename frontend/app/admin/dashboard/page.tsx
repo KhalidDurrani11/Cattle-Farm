@@ -205,37 +205,44 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="divide-y divide-slate-700/50">
                 {verifications.map(user => (
-                  <div key={user._id} className="p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-white">{user.name}</p>
-                        <span className="bg-slate-700 text-slate-300 text-xs px-2 py-0.5 rounded capitalize">{user.role}</span>
-                      </div>
-                      <p className="text-slate-400 text-sm mt-0.5">{user.email}</p>
-                      <p className="text-slate-500 text-xs mt-1">
-                        Submitted: {user.verificationSubmittedAt ? new Date(user.verificationSubmittedAt).toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}
-                      </p>
-                      {user.verificationDocuments?.length > 0 && (
-                        <div className="flex gap-2 mt-2 flex-wrap">
-                          {user.verificationDocuments.map((doc: any, i: number) => (
-                            <a key={i} href={doc.url} target="_blank" rel="noopener noreferrer"
-                              className="text-xs text-blue-400 hover:text-blue-300 underline">
-                              View Doc {i + 1}
-                            </a>
-                          ))}
+                  <div key={user._id} className="p-4 md:p-5 flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-semibold text-white">{user.name}</p>
+                          <span className="bg-slate-700 text-slate-300 text-xs px-2 py-0.5 rounded capitalize">{user.role}</span>
                         </div>
-                      )}
+                        <p className="text-slate-400 text-sm mt-0.5">{user.email}</p>
+                        {user.cnic && (
+                          <p className="text-slate-300 text-sm mt-1 font-mono bg-slate-800/50 inline-block px-2 py-1 rounded border border-slate-700">CNIC: {user.cnic}</p>
+                        )}
+                        <p className="text-slate-500 text-xs mt-2">
+                          Submitted: {user.verificationSubmittedAt ? new Date(user.verificationSubmittedAt).toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}
+                        </p>
+                      </div>
+                      <div className="flex gap-2 flex-shrink-0">
+                        <button onClick={() => handleApproveUser(user._id)} disabled={!!actionLoading}
+                          className="flex items-center gap-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                          <CheckCircle2 className="w-4 h-4" /> Approve
+                        </button>
+                        <button onClick={() => handleRejectUser(user._id)} disabled={!!actionLoading}
+                          className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                          <XCircle className="w-4 h-4" /> Reject
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
-                      <button onClick={() => handleApproveUser(user._id)} disabled={!!actionLoading}
-                        className="flex items-center gap-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                        <CheckCircle2 className="w-4 h-4" /> Approve
-                      </button>
-                      <button onClick={() => handleRejectUser(user._id)} disabled={!!actionLoading}
-                        className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                        <XCircle className="w-4 h-4" /> Reject
-                      </button>
-                    </div>
+                    {user.verificationDocuments?.length > 0 && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                        {user.verificationDocuments.map((doc: any, i: number) => (
+                          <div key={i} className="bg-slate-900 rounded-lg p-3 border border-slate-700">
+                            <p className="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">{doc.type.replace('_', ' ')}</p>
+                            <a href={doc.url} target="_blank" rel="noopener noreferrer" className="block">
+                              <img src={doc.url} alt={`Document ${i + 1}`} className="w-full h-48 object-contain bg-black/50 rounded-md hover:opacity-80 transition-opacity" />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -255,29 +262,44 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="divide-y divide-slate-700/50">
                 {listings.map(listing => (
-                  <div key={listing._id} className="p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-white">{listing.name}</p>
-                        <span className="bg-slate-700 text-slate-300 text-xs px-2 py-0.5 rounded">{listing.category}</span>
+                  <div key={listing._id} className="p-4 md:p-5 flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-semibold text-white">{listing.name}</p>
+                          <span className="bg-slate-700 text-slate-300 text-xs px-2 py-0.5 rounded">{listing.category}</span>
+                        </div>
+                        <p className="text-slate-400 text-sm mt-1">
+                          {listing.breed} • {listing.age} yrs • {listing.weight ? `${listing.weight} kg • ` : ''}₨{listing.price?.toLocaleString()}
+                        </p>
+                        <p className="text-slate-400 text-sm mt-1 line-clamp-2">{listing.description}</p>
+                        <p className="text-slate-500 text-xs mt-2">
+                          Location: {listing.location || 'Unknown'} {listing.district ? `(${listing.district})` : ''}
+                        </p>
+                        <p className="text-slate-500 text-xs mt-1">
+                          By: <span className="font-medium text-slate-300">{listing.sellerId?.name || 'Unknown'}</span> — {listing.sellerId?.phone || ''}
+                        </p>
                       </div>
-                      <p className="text-slate-400 text-sm mt-0.5">
-                        {listing.breed} • {listing.age} yrs • ₨{listing.price?.toLocaleString()}
-                      </p>
-                      <p className="text-slate-500 text-xs mt-1">
-                        By: {listing.sellerId?.name || 'Unknown'} — {listing.sellerId?.phone || ''}
-                      </p>
+                      <div className="flex gap-2 flex-shrink-0">
+                        <button onClick={() => handleApproveListing(listing._id)} disabled={!!actionLoading}
+                          className="flex items-center gap-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                          <CheckCircle2 className="w-4 h-4" /> Approve
+                        </button>
+                        <button onClick={() => handleRejectListing(listing._id)} disabled={!!actionLoading}
+                          className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                          <XCircle className="w-4 h-4" /> Reject
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
-                      <button onClick={() => handleApproveListing(listing._id)} disabled={!!actionLoading}
-                        className="flex items-center gap-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                        <CheckCircle2 className="w-4 h-4" /> Approve
-                      </button>
-                      <button onClick={() => handleRejectListing(listing._id)} disabled={!!actionLoading}
-                        className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                        <XCircle className="w-4 h-4" /> Reject
-                      </button>
-                    </div>
+                    {listing.images?.length > 0 && (
+                      <div className="flex gap-3 overflow-x-auto pb-2 mt-2">
+                        {listing.images.map((img: string, i: number) => (
+                          <a key={i} href={img} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0">
+                            <img src={img} alt={`Listing ${i + 1}`} className="w-32 h-32 object-cover rounded-lg border border-slate-700 hover:border-green-500/50 transition-colors bg-slate-900" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

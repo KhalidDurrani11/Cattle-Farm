@@ -1,10 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   getDashboard, deleteCattle, markCattleAsSold, markCattleAsAvailable,
-  verifyCattle, rejectCattle,
+  verifyCattle, rejectCattle, uploadImage
 } from '@/lib/api';
 import { Cattle, Inquiry } from '@/types';
 import FarmerDashboard from '@/components/FarmerDashboard';
@@ -30,8 +30,17 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardContent() {
   const { user, token, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'verify'>('overview');
@@ -66,13 +75,11 @@ export default function DashboardPage() {
 
   // Check for tab query param
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const tab = params.get('tab');
-      if (tab === 'verification' || tab === 'verify') setActiveTab('verify');
-      else if (tab === 'profile') setActiveTab('profile');
-    }
-  }, []);
+    const tab = searchParams.get('tab');
+    if (tab === 'verification' || tab === 'verify') setActiveTab('verify');
+    else if (tab === 'profile') setActiveTab('profile');
+    else setActiveTab('overview');
+  }, [searchParams]);
 
   const fetchDashboardData = async () => {
     if (!token) return;
@@ -150,13 +157,16 @@ export default function DashboardPage() {
     if (!frontImage || !backImage) { setCnicError('Please upload both front and back images of your CNIC'); return; }
     setCnicLoading(true);
     try {
+      const frontRes = await uploadImage(frontImage, token!);
+      const backRes = await uploadImage(backImage, token!);
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           documents: [
-            { type: 'cnic', url: `cnic-front-${digits}` },
-            { type: 'cnic', url: `cnic-back-${digits}` },
+            { type: 'cnic_front', url: frontRes.url },
+            { type: 'cnic_back', url: backRes.url },
           ],
           cnic: digits,
         }),
