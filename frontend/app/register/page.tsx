@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { registerUser } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LanguageContext';
-import { Tractor, Eye, EyeOff } from 'lucide-react';
+import { Tractor, Eye, EyeOff, Loader2, User, Mail, Phone, Lock, Globe, MapPin } from 'lucide-react';
 import { PROVINCES, CITIES_BY_PROVINCE } from '@/lib/cities';
+import { motion } from 'framer-motion';
 
 export default function RegisterPage() {
   const { user } = useAuth();
@@ -98,7 +99,6 @@ export default function RegisterPage() {
 
     try {
       await registerUser(form);
-      // Redirect to login explicitly instead of auto-login
       router.push('/login?registered=true');
     } catch (err: any) {
       setError(err.message || t('error'));
@@ -108,68 +108,96 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 py-24 transition-colors duration-300">
-      <div className="absolute inset-0 z-0 bg-primary/5 pointer-events-none"></div>
-      
-      <div className="w-full max-w-md relative z-10 animate-fade-in-up">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#111311] flex items-center justify-center p-4 py-28 transition-colors duration-500 relative overflow-hidden">
+      {/* Decorative floating blurred gradient blobs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#166534]/10 dark:bg-[#22c55e]/5 rounded-full blur-3xl pointer-events-none animate-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#ca8a04]/10 dark:bg-[#ca8a04]/5 rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', duration: 0.8 }}
+        className="w-full max-w-md relative z-10"
+      >
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary border border-primary/20">
-             <Tractor className="w-10 h-10" />
-          </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mt-4">{t('reg_title')}</h1>
-          <p className="font-sans text-earth-500 mt-2">Join thousands of Pakistani cattle farmers</p>
+          <motion.div 
+            whileHover={{ scale: 1.05, rotate: -5 }}
+            className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary border border-primary/20 shadow-md cursor-pointer"
+          >
+             <Tractor className="w-8 h-8" />
+          </motion.div>
+          <h1 className="font-serif text-3xl font-extrabold tracking-tight text-gray-950 dark:text-white">{t('reg_title')}</h1>
+          <p className="font-sans text-gray-500 mt-2 text-sm">Join thousands of Pakistani cattle farmers</p>
         </div>
 
-        <div className="glass-card rounded-2xl p-8 shadow-xl bg-white/95 dark:bg-[#181b18]/95 border border-line">
+        <div className="bg-white/70 dark:bg-[#181b18]/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-[#1E4620]/10 dark:border-[#292e29] hover:border-primary/20 transition-all duration-300">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-xl text-sm mb-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-xl text-sm mb-4"
+            >
               {error}
-            </div>
+            </motion.div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">{t('reg_name')} *</label>
-              <input name="name" value={form.name} onChange={handleChange} required className="input-field animate-fade-in" placeholder="Muhammad Ali" />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('reg_name')} *</label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input name="name" value={form.name} onChange={handleChange} required className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl pl-11 pr-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" placeholder="Muhammad Ali" />
+              </div>
             </div>
+            
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">{t('reg_email')} *</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} required className="input-field ltr-only" placeholder="you@example.com" />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('reg_email')} *</label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input name="email" type="email" value={form.email} onChange={handleChange} required className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl pl-11 pr-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all ltr-only" placeholder="you@example.com" />
+              </div>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Phone Number (WhatsApp) *</label>
-              <input 
-                name="phone" 
-                value={form.phone} 
-                onChange={handleChange} 
-                required
-                className={`input-field ltr-only ${phoneError ? 'border-red-500 bg-red-500/5' : ''}`} 
-                placeholder="03001234567 or +923001234567" 
-                maxLength={15}
-              />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Phone Number (WhatsApp) *</label>
+              <div className="relative">
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input 
+                  name="phone" 
+                  value={form.phone} 
+                  onChange={handleChange} 
+                  required
+                  className={`w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl pl-11 pr-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all ltr-only ${phoneError ? 'border-red-500 bg-red-500/5' : ''}`} 
+                  placeholder="03001234567 or +923001234567" 
+                  maxLength={15}
+                />
+              </div>
               {phoneError && <p className="text-red-500 text-xs mt-1 font-medium">{phoneError}</p>}
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">{t('reg_pass')} *</label>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('reg_pass')} *</label>
               <div className="relative">
-                <input name="password" type={showPassword ? "text" : "password"} value={form.password} onChange={handleChange} required className="input-field ltr-only w-full pr-10" placeholder="••••••••" minLength={6} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-earth-500 hover:text-foreground">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input name="password" type={showPassword ? "text" : "password"} value={form.password} onChange={handleChange} required className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl pl-11 pr-10 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all ltr-only" placeholder="••••••••" minLength={6} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-foreground">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">{t('reg_role')}</label>
-                <select name="role" value={form.role} onChange={handleChange} className="input-field cursor-pointer">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{t('reg_role')}</label>
+                <select name="role" value={form.role} onChange={handleChange} className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl px-3 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
                   <option value="farmer">{t('role_farmer')}</option>
                   <option value="buyer">{t('role_buyer')}</option>
                   <option value="trader">{t('role_trader')}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Country</label>
-                <select value={countryType} onChange={handleCountryChange} className="input-field cursor-pointer">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Country</label>
+                <select value={countryType} onChange={handleCountryChange} className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl px-3 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
                   <option value="Pakistan">Pakistan</option>
                   <option value="International">International</option>
                 </select>
@@ -179,18 +207,18 @@ export default function RegisterPage() {
             {countryType === 'Pakistan' ? (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Province *</label>
-                  <select name="province" value={form.province} onChange={handleProvinceChange} required className="input-field cursor-pointer">
-                    <option value="">Select Province</option>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Province *</label>
+                  <select name="province" value={form.province} onChange={handleProvinceChange} required className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl px-3 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
+                    <option value="">Province</option>
                     {PROVINCES.map(p => (
                       <option key={p} value={p}>{p}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">City/District *</label>
-                  <select name="district" value={form.district} onChange={handleCityChange} className="input-field cursor-pointer" required disabled={!form.province}>
-                    <option value="" disabled>Select City</option>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">City/District *</label>
+                  <select name="district" value={form.district} onChange={handleCityChange} className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl px-3 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" required disabled={!form.province}>
+                    <option value="" disabled>City</option>
                     {form.province && CITIES_BY_PROVINCE[form.province as keyof typeof CITIES_BY_PROVINCE]?.map((c: string) => (
                       <option key={c} value={c}>{c}</option>
                     ))}
@@ -199,21 +227,25 @@ export default function RegisterPage() {
               </div>
             ) : (
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Country Name *</label>
-                <input name="location" value={form.location} onChange={handleChange} required className="input-field" placeholder="United Arab Emirates" />
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Country Name *</label>
+                <div className="relative">
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input name="location" value={form.location} onChange={handleChange} required className="w-full bg-white dark:bg-[#111311] border border-[#1E4620]/15 dark:border-[#292e29] text-foreground rounded-2xl pl-11 pr-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" placeholder="United Arab Emirates" />
+                </div>
               </div>
             )}
-            <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3 text-base mt-4 shadow-lg hover:shadow-xl transition-all font-semibold">
-              {loading ? t('loading') : t('reg_btn')}
+            
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3.5 text-base mt-4 shadow-[0_10px_20px_rgba(22,101,52,0.15)] hover:shadow-[0_15px_25px_rgba(22,101,52,0.25)] hover:scale-[1.01] active:scale-95 transition-all font-bold rounded-2xl flex items-center justify-center">
+              {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : t('reg_btn')}
             </button>
           </form>
 
-          <p className="text-center font-sans text-sm text-earth-500 mt-6">
+          <p className="text-center font-sans text-sm text-gray-500 dark:text-gray-400 mt-6">
             {t('reg_have_acc')}{' '}
-            <Link href="/login" className="text-primary font-semibold hover:underline">{t('reg_login')}</Link>
+            <Link href="/login" className="text-primary font-bold hover:underline">{t('reg_login')}</Link>
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

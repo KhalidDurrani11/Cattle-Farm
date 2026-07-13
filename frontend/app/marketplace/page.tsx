@@ -6,9 +6,9 @@ import { Cattle } from '@/types';
 import CattleCard from '@/components/CattleCard';
 import CattleDetailsModal from '@/components/CattleDetailsModal';
 import {
-  Search, Filter, Grid3X3, List, CheckCircle, SlidersHorizontal,
-  ChevronDown, MapPin, Tag
+  Search, Grid3X3, List, CheckCircle, SlidersHorizontal, MapPin
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES = ['All', 'Bull', 'Cow', 'Calf', 'Buffalo', 'Goat', 'Sheep'];
 const BREEDS = ['All', 'Sahiwal', 'Cholistani', 'Thari', 'Nili-Ravi', 'Murrah', 'Beetal', 'Friesian', 'Crossbreed'];
@@ -81,45 +81,74 @@ function MarketplaceContent() {
     c.location.toLowerCase().includes(search.toLowerCase())
   );
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 15 },
+    show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring' as const, stiffness: 100, damping: 15 } },
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-950 dark:text-white mb-2 font-serif">
           Browse Livestock
         </h1>
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-[#a8a29e]">
           Find verified cattle directly from farmers across Pakistan
         </p>
-      </div>
+      </motion.div>
 
       {/* Featured Section */}
       {featured.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-12"
+        >
+          <h2 className="text-lg font-bold text-gray-950 dark:text-white mb-5 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-green-500" />
             Verified Featured Listings
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.slice(0, 3).map(c => (
               <CattleCard key={c._id} cattle={c} onView={setSelected} />
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Search & Filters Bar */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 mb-6 shadow-sm border border-gray-100 dark:border-slate-700">
+      <motion.div 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white/70 dark:bg-[#181b18]/70 backdrop-blur-xl rounded-2xl p-4 mb-6 shadow-sm border border-[#1E4620]/10 dark:border-[#292e29]"
+      >
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search by name, breed, or location..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
             />
           </div>
 
@@ -128,7 +157,7 @@ function MarketplaceContent() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700"
+              className="px-4 py-3 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 cursor-pointer"
             >
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -136,17 +165,17 @@ function MarketplaceContent() {
             <select
               value={province}
               onChange={(e) => setProvince(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700"
+              className="px-4 py-3 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 cursor-pointer"
             >
               {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
 
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all text-sm font-semibold ${
                 showFilters
-                  ? 'bg-primary text-white border-primary'
-                  : 'border-gray-200 dark:border-slate-600 hover:bg-gray-50'
+                  ? 'bg-primary text-white border-primary shadow-md'
+                  : 'border-[#1E4620]/15 dark:border-[#292e29] hover:bg-[#1E4620]/5 text-foreground'
               }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
@@ -155,16 +184,16 @@ function MarketplaceContent() {
           </div>
 
           {/* View Toggle */}
-          <div className="flex gap-1 bg-gray-100 dark:bg-slate-700 p-1 rounded-lg">
+          <div className="flex gap-1 bg-[#1E4620]/5 dark:bg-white/5 p-1 rounded-xl items-center self-start md:self-auto">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-white dark:bg-slate-600 shadow' : ''}`}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#292e29] text-primary dark:text-white shadow' : 'text-gray-400'}`}
             >
               <Grid3X3 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded ${viewMode === 'list' ? 'bg-white dark:bg-slate-600 shadow' : ''}`}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#292e29] text-primary dark:text-white shadow' : 'text-gray-400'}`}
             >
               <List className="w-4 h-4" />
             </button>
@@ -172,101 +201,126 @@ function MarketplaceContent() {
         </div>
 
         {/* Expanded Filters */}
-        {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Breed</label>
-              <select
-                value={breed}
-                onChange={(e) => setBreed(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600"
-              >
-                {BREEDS.map(b => <option key={b} value={b}>{b}</option>)}
-              </select>
-            </div>
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 pt-4 border-t border-[#1E4620]/10 dark:border-[#292e29] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">Breed</label>
+                  <select
+                    value={breed}
+                    onChange={(e) => setBreed(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/10 text-sm cursor-pointer"
+                  >
+                    {BREEDS.map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Min Price</label>
-              <input
-                type="number"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                placeholder="0"
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600"
-              />
-            </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">Min Price (Rs)</label>
+                  <input
+                    type="number"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    placeholder="0"
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/10 text-sm"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Max Price</label>
-              <input
-                type="number"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                placeholder="Any"
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600"
-              />
-            </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">Max Price (Rs)</label>
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    placeholder="Any"
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/10 text-sm"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Sort By</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600"
-              >
-                {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">Sort By</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#1E4620]/15 dark:border-[#292e29] bg-white dark:bg-[#111311] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/10 text-sm cursor-pointer"
+                  >
+                    {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                </div>
 
-            <div className="md:col-span-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={verifiedOnly}
-                  onChange={(e) => setVerifiedOnly(e.target.checked)}
-                  className="w-4 h-4 text-primary rounded"
-                />
-                <span className="text-sm">Show only verified cattle</span>
-                <CheckCircle className="w-4 h-4 text-green-500" />
-              </label>
-            </div>
-          </div>
-        )}
-      </div>
+                <div className="sm:col-span-2 md:col-span-4 flex items-center mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={verifiedOnly}
+                      onChange={(e) => setVerifiedOnly(e.target.checked)}
+                      className="w-4 h-4 text-primary rounded border-[#1E4620]/15 dark:border-[#292e29] focus:ring-primary focus:ring-offset-0 focus:ring-1"
+                    />
+                    <span className="text-sm text-gray-600 dark:text-gray-300 font-medium group-hover:text-primary transition-colors">Show only verified cattle</span>
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                  </label>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
       {/* Results Count */}
-      <div className="mb-4 text-sm text-gray-500">
-        Showing {filteredCattle.length} {filteredCattle.length === 1 ? 'result' : 'results'}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="mb-6 text-sm text-gray-500 dark:text-[#a8a29e]"
+      >
+        Showing <span className="font-bold text-gray-950 dark:text-white">{filteredCattle.length}</span> {filteredCattle.length === 1 ? 'livestock listing' : 'livestock listings'}
         {(category !== 'All' || breed !== 'All' || province !== 'All' || search) && ' (filtered)'}
-      </div>
+      </motion.div>
 
       {/* Results Grid */}
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="spinner" />
+        <div className="flex justify-center py-32">
+          <div className="spinner animate-spin" />
         </div>
       ) : filteredCattle.length > 0 ? (
-        <div className={viewMode === 'grid'
-          ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-          : 'space-y-4'
-        }>
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className={viewMode === 'grid'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+            : 'space-y-4'
+          }
+        >
           {filteredCattle.map(c => (
-            <CattleCard
-              key={c._id}
-              cattle={c}
-              onView={setSelected}
-              viewMode={viewMode}
-            />
+            <motion.div key={c._id} variants={itemVariants}>
+              <CattleCard
+                cattle={c}
+                onView={setSelected}
+                viewMode={viewMode}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       ) : (
-        <div className="text-center py-20">
-          <div className="w-20 h-20 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-8 h-8 text-gray-400" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-24 bg-white/50 dark:bg-[#181b18]/50 backdrop-blur rounded-3xl border border-[#1E4620]/10 dark:border-[#292e29]"
+        >
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
+            <Search className="w-8 h-8 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No listings found</h3>
-          <p className="text-gray-500">Try adjusting your filters or search terms</p>
-        </div>
+          <h3 className="text-xl font-bold text-gray-950 dark:text-white mb-2">No listings found</h3>
+          <p className="text-gray-500 dark:text-[#a8a29e] text-sm">Try adjusting your filters or search terms</p>
+        </motion.div>
       )}
 
       {/* Details Modal */}
@@ -282,7 +336,7 @@ function MarketplaceContent() {
 
 export default function MarketplacePage() {
   return (
-    <Suspense fallback={<div className="flex justify-center py-20"><div className="spinner" /></div>}>
+    <Suspense fallback={<div className="flex justify-center py-32"><div className="spinner animate-spin" /></div>}>
       <MarketplaceContent />
     </Suspense>
   );

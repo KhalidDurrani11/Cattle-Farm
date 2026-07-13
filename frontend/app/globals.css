@@ -151,6 +151,24 @@
   .animate-pulse-glow {
     animation: pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  @keyframes meshFlow {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+  }
+
+  .animate-mesh {
+    background-size: 200% 200%;
+    animation: meshFlow 15s ease infinite;
+  }
+
+  .premium-glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+  }
+  .premium-glow-green:hover {
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.35);
+  }
 }
 
 .hero-gradient-light {
@@ -172,8 +190,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-line rounded-full;
+  background-color: var(--line);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-earth-400 dark:bg-earth-600;
+  background-color: var(--primary);
 }
