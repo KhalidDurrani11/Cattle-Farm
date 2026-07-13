@@ -7,25 +7,19 @@ interface LogoProps {
   textClassName?: string;
 }
 
-export default function Logo({ className = '', size = 44, showText = true, textClassName = '' }: LogoProps) {
+export default function Logo({ className = '', size = 52, showText = true, textClassName = '' }: LogoProps) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span
-        className="flex-shrink-0 rounded-xl bg-white p-1 shadow-sm border border-gray-100 dark:border-white/10 dark:bg-white/10"
-        style={{ width: size + 8, height: size + 8, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Image
-          src="/logo.png"
-          alt="Cattle Farm Trading Logo"
-          width={size}
-          height={size}
-          className="object-contain"
-          style={{ mixBlendMode: 'multiply' }}
-          priority
-        />
-      </span>
+    <span className={`inline-flex items-center gap-3 ${className}`}>
+      <Image
+        src="/logo.png"
+        alt="Cattle Farm Trading Logo"
+        width={size}
+        height={size}
+        className="object-contain flex-shrink-0 dark:invert"
+        priority
+      />
       {showText && (
-        <span className={`font-bold tracking-tight leading-tight text-[#1E4620] dark:text-[#8FBC8F] ${textClassName}`}>
+        <span className={`text-xl font-extrabold tracking-tight leading-tight text-[#1E4620] dark:text-[#8FBC8F] ${textClassName}`}>
           Cattle Farm
         </span>
       )}
