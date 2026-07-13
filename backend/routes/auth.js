@@ -237,7 +237,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 // PUT /api/auth/profile - Update profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const allowed = ['name', 'phone', 'location', 'tehsil', 'district', 'province', 'avatar'];
+    const allowed = ['name', 'phone', 'location', 'tehsil', 'district', 'province', 'avatar', 'cnic'];
     const updates = {};
     allowed.forEach(f => { if (req.body[f] !== undefined) updates[f] = req.body[f]; });
 

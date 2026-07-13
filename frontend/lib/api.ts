@@ -219,9 +219,10 @@ export async function markAllNotificationsAsRead(token: string) {
 }
 
 // Upload
-export async function uploadImage(file: File, token: string): Promise<{ url: string }> {
+export async function uploadImage(file: File, token: string, folder?: string): Promise<{ url: string }> {
   const formData = new FormData();
   formData.append('image', file);
+  if (folder) formData.append('folder', folder);
   const res = await fetch(`${API_BASE}/api/upload`, {
     method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData,
   });

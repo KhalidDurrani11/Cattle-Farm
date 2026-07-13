@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from 'next-themes';
 import {
-  Tractor, Moon, Sun, Menu, X, LogOut, ChevronDown,
-  ShieldCheck, Bell, User, Package
+  Moon, Sun, Menu, X, LogOut, ChevronDown,
+  ShieldCheck, User, Package
 } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -15,10 +16,16 @@ export default function Header() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = () => {
@@ -29,13 +36,13 @@ export default function Header() {
 
   const getRoleBadge = (role: string) => {
     const badges: Record<string, { color: string; label: string }> = {
-      farmer: { color: 'bg-green-100 text-green-700', label: 'Farmer' },
-      buyer: { color: 'bg-blue-100 text-blue-700', label: 'Buyer' },
-      trader: { color: 'bg-purple-100 text-purple-700', label: 'Trader' },
-      vet: { color: 'bg-emerald-100 text-emerald-700', label: 'Vet' },
-      admin: { color: 'bg-red-100 text-red-700', label: 'Admin' },
+      farmer: { color: 'bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300', label: 'Farmer' },
+      buyer: { color: 'bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300', label: 'Buyer' },
+      trader: { color: 'bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300', label: 'Trader' },
+      vet: { color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300', label: 'Vet' },
+      admin: { color: 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300', label: 'Admin' },
     };
-    return badges[role] || { color: 'bg-gray-100 text-gray-700', label: role };
+    return badges[role] || { color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300', label: role };
   };
 
   const navLink = (href: string, label: string) => {
@@ -44,10 +51,10 @@ export default function Header() {
       <Link
         href={href}
         onClick={() => setMenuOpen(false)}
-        className={`font-semibold tracking-wide transition-all ${
+        className={`font-semibold tracking-wide transition-all duration-300 ${
           isActive
-            ? 'text-[#1E4620] dark:text-[#8FBC8F] border-b-2 border-[#1E4620] dark:border-[#8FBC8F] pb-1'
-            : 'text-[#4E342E] dark:text-[#A1887F] hover:text-[#1E4620] hover:dark:text-[#8FBC8F] hover:border-b-2 hover:border-[#1E4620]/40 pb-1 border-b-2 border-transparent'
+            ? 'text-primary dark:text-[#8FBC8F] border-b-2 border-primary dark:border-[#8FBC8F] pb-1 scale-105'
+            : 'text-[#4E342E] dark:text-[#A1887F] hover:text-primary hover:dark:text-[#8FBC8F] hover:scale-105 pb-1 border-b-2 border-transparent'
         }`}
       >
         {label}
@@ -56,17 +63,17 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#FAF8F5]/90 dark:bg-[#1C1917]/90 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-[#1E4620]/10 shadow-sm transition-colors duration-300">
-      <nav className="flex justify-between items-center px-4 md:px-8 py-4 max-w-7xl mx-auto">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      scrolled 
+        ? 'mx-0 sm:mx-4 sm:top-3 bg-white/70 dark:bg-[#1C1917]/70 backdrop-blur-xl border border-white/20 dark:border-white/5 sm:rounded-2xl shadow-[0_10px_30px_rgba(30,70,32,0.1)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.4)]'
+        : 'bg-[#FAF8F5]/90 dark:bg-[#1C1917]/90 backdrop-blur-md border-b border-[#1E4620]/10 shadow-sm'
+    }`}>
+      <nav className={`flex justify-between items-center px-4 md:px-8 max-w-7xl mx-auto transition-all duration-500 ${
+        scrolled ? 'py-2.5' : 'py-4'
+      }`}>
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-[#1E4620]/10 group-hover:bg-[#1E4620]/20 transition-colors p-2 rounded-xl text-[#1E4620]">
-            <Tractor className="w-6 h-6" />
-          </div>
-          <span className="text-base sm:text-xl font-black tracking-tight text-[#1E4620] dark:text-[#8FBC8F] leading-tight">
-            <span className="hidden sm:inline">Cattle Farm Trading</span>
-            <span className="sm:hidden">CFT</span>
-          </span>
+        <Link href="/">
+          <Logo />
         </Link>
 
         {/* Desktop Nav */}
@@ -93,62 +100,62 @@ export default function Header() {
             {user ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
-                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
-                  {user.name?.[0]?.toUpperCase()}
-                </div>
-                <div className="text-left hidden lg:block">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                  <div className="flex items-center gap-1">
-                    <span className={`text-xs px-1.5 py-0.5 rounded ${getRoleBadge(user.role).color}`}>
-                      {getRoleBadge(user.role).label}
-                    </span>
-                    {user.verificationStatus === 'verified' && (
-                      <ShieldCheck className="w-3 h-3 text-green-500" />
+                  <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
+                    {user.name?.[0]?.toUpperCase()}
+                  </div>
+                  <div className="text-left hidden lg:block">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                    <div className="flex items-center gap-1">
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${getRoleBadge(user.role).color}`}>
+                        {getRoleBadge(user.role).label}
+                      </span>
+                      {user.verificationStatus === 'verified' && (
+                        <ShieldCheck className="w-3 h-3 text-green-500" />
+                      )}
+                    </div>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                </button>
+
+                {/* Dropdown */}
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="p-3 border-b border-gray-100 dark:border-slate-700">
+                    <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                  <div className="p-2">
+                    <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">
+                      <Package className="w-4 h-4" /> Dashboard
+                    </Link>
+                    <Link href="/dashboard?tab=profile" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">
+                      <User className="w-4 h-4" /> Profile
+                    </Link>
+                    {user.role === 'admin' && (
+                      <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-red-600 font-semibold">
+                        <ShieldCheck className="w-4 h-4 text-red-500" /> Admin Panel
+                      </Link>
+                    )}
+                    {user.verificationStatus !== 'verified' && user.role !== 'admin' && (
+                      <Link href="/dashboard?tab=verification" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-amber-600">
+                        <ShieldCheck className="w-4 h-4" /> Get Verified
+                      </Link>
                     )}
                   </div>
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-400" />
-              </button>
-
-              {/* Dropdown */}
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                <div className="p-3 border-b border-gray-100 dark:border-slate-700">
-                  <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
-                <div className="p-2">
-                  <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">
-                    <Package className="w-4 h-4" /> Dashboard
-                  </Link>
-                  <Link href="/dashboard?tab=profile" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">
-                    <User className="w-4 h-4" /> Profile
-                  </Link>
-                  {user.role === 'admin' && (
-                    <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-red-600 font-semibold">
-                      <ShieldCheck className="w-4 h-4 text-red-500" /> Admin Panel
-                    </Link>
-                  )}
-                  {user.verificationStatus !== 'verified' && user.role !== 'admin' && (
-                    <Link href="/dashboard?tab=verification" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-amber-600">
-                      <ShieldCheck className="w-4 h-4" /> Get Verified
-                    </Link>
-                  )}
-                </div>
-                <div className="p-2 border-t border-gray-100 dark:border-slate-700">
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 w-full"
-                  >
-                    <LogOut className="w-4 h-4" /> Sign Out
-                  </button>
+                  <div className="p-2 border-t border-gray-100 dark:border-slate-700">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 w-full"
+                    >
+                      <LogOut className="w-4 h-4" /> Sign Out
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <Link href="/login" className="btn-primary">
-              Sign In
-            </Link>
-          )}
+            ) : (
+              <Link href="/login" className="btn-primary">
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
 

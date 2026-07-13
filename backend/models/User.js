@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const verificationDocumentSchema = new mongoose.Schema({
-  type: { type: String, enum: ['cnic', 'business_registration', 'farm_certificate', 'other'], required: true },
+  type: { type: String, enum: ['cnic', 'cnic_front', 'cnic_back', 'business_registration', 'farm_certificate', 'other'], required: true },
   url: { type: String, required: true },
   status: { type: String, enum: ['pending', 'verified', 'rejected'], default: 'pending' },
   uploadedAt: { type: Date, default: Date.now },

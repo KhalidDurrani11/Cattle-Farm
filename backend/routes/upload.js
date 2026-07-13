@@ -25,9 +25,17 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'No image file provided.' });
 
+    const folder = req.body.folder === 'documents'
+      ? 'agritradex/documents'
+      : 'agritradex/cattle';
+
+    const transformations = folder === 'agritradex/cattle'
+      ? [{ width: 1200, height: 900, crop: 'limit', quality: 'auto' }]
+      : [{ quality: 'auto' }];
+
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: 'agritradex/cattle', transformation: [{ width: 1200, height: 900, crop: 'limit', quality: 'auto' }] },
+        { folder, transformation: transformations },
         (error, result) => { if (error) reject(error); else resolve(result); }
       );
       stream.end(req.file.buffer);

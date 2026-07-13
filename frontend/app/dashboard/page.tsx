@@ -157,8 +157,8 @@ function DashboardContent() {
     if (!frontImage || !backImage) { setCnicError('Please upload both front and back images of your CNIC'); return; }
     setCnicLoading(true);
     try {
-      const frontRes = await uploadImage(frontImage, token!);
-      const backRes = await uploadImage(backImage, token!);
+      const frontRes = await uploadImage(frontImage, token!, 'documents');
+      const backRes = await uploadImage(backImage, token!, 'documents');
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verification`, {
         method: 'POST',
