@@ -20,7 +20,7 @@ export default function Logo({ className = '', size = 52, showText = true, textC
       />
       {showText && (
         <span className={`text-xl font-extrabold tracking-tight leading-tight text-[#1E4620] dark:text-[#8FBC8F] ${textClassName}`}>
-          Cattle Farm
+          Cattle Farm Trading
         </span>
       )}
     </span>
