@@ -3,8 +3,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Cattle } from '@/types';
 import { useAuth } from '@/context/AuthContext';
-import { ShieldCheck, BadgeCheck, Calendar, MapPin, User, CheckCircle, XCircle } from 'lucide-react';
+import { ShieldCheck, BadgeCheck, Calendar, MapPin, User, CheckCircle, XCircle, Gavel } from 'lucide-react';
 import Link from 'next/link';
+import AuctionTimer from './AuctionTimer';
+import BidModal from './BidModal';
 
 const CATEGORY_EMOJI: Record<string, string> = {
   Bull: '🐂', Cow: '🐄', Calf: '🐮', Buffalo: '🦬', Goat: '🐐', Sheep: '🐑', Other: '🐾',
@@ -18,6 +20,7 @@ interface Props {
 export default function CattleDetailsModal({ cattle, onClose }: Props) {
   const { user } = useAuth();
   const [imgIdx, setImgIdx] = useState(0);
+  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
   const seller = typeof cattle.sellerId === 'object' ? cattle.sellerId : null;
 
   const isVerified = cattle.verification?.status === 'verified';
@@ -53,7 +56,7 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
             )}
 
             {/* Status Badge */}
-            <div className="absolute top-3 left-3">
+            <div className="absolute top-3 left-3 flex flex-col gap-1">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                 cattle.status === 'sold' ? 'bg-blue-500 text-white' :
                 cattle.status === 'reserved' ? 'bg-amber-500 text-white' :
@@ -61,6 +64,11 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
               }`}>
                 {cattle.status.charAt(0).toUpperCase() + cattle.status.slice(1)}
               </span>
+              {cattle.auctionStatus === 'active' && (
+                <span className="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium shadow-lg animate-pulse-glow">
+                  Auction Live
+                </span>
+              )}
             </div>
           </div>
 
@@ -81,11 +89,18 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
             </div>
           )}
 
-          {/* Price */}
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold text-primary-600">₨{cattle.price.toLocaleString()}</span>
-            {cattle.originalPrice && cattle.originalPrice > cattle.price && (
-              <span className="text-lg text-gray-400 line-through">₨{cattle.originalPrice.toLocaleString()}</span>
+          {/* Price & Auction */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-primary-600">₨{cattle.price.toLocaleString()}</span>
+              {cattle.originalPrice && cattle.originalPrice > cattle.price && (
+                <span className="text-lg text-gray-400 line-through">₨{cattle.originalPrice.toLocaleString()}</span>
+              )}
+            </div>
+            {cattle.auctionStatus === 'active' && (
+              <div className="mt-2 sm:mt-0">
+                <AuctionTimer endTime={new Date(Date.now() + 86400000)} /> {/* Mock 24h timer for now, would use cattle.auctionEndTime */}
+              </div>
             )}
           </div>
 
@@ -247,6 +262,15 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
                     Send Inquiry
                   </Link>
                 )}
+                
+                {cattle.auctionStatus === 'active' && user?.role !== 'farmer' && (
+                  <button
+                    onClick={() => setIsBidModalOpen(true)}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-purple-600/30"
+                  >
+                    <Gavel className="w-5 h-5" /> Place Bid
+                  </button>
+                )}
               </>
             ) : (
               <button
@@ -259,6 +283,18 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
           </div>
         </div>
       </div>
+      
+      {/* Bid Modal */}
+      {cattle.auctionStatus === 'active' && (
+        <BidModal
+          isOpen={isBidModalOpen}
+          onClose={() => setIsBidModalOpen(false)}
+          auctionId={cattle._id} // Using cattle ID for now
+          currentHighestBid={cattle.price}
+          startingPrice={cattle.price}
+          onBidSuccess={() => alert('Bid placed successfully!')}
+        />
+      )}
     </div>
   );
 }

@@ -53,11 +53,18 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
   };
 
   const getStatusBadge = () => {
-    switch (cattle.status) {
+    const status = cattle.availability || cattle.status;
+    switch (status) {
+      case 'Sold':
       case 'sold':
         return <span className="badge bg-blue-100 text-blue-700">Sold</span>;
+      case 'In Auction':
+        return <span className="badge bg-purple-100 text-purple-700">In Auction</span>;
+      case 'For Rent':
+        return <span className="badge bg-amber-100 text-amber-700">For Rent</span>;
       case 'reserved':
         return <span className="badge bg-amber-100 text-amber-700">Reserved</span>;
+      case 'For Sale':
       case 'available':
       default:
         return <span className="badge bg-green-100 text-green-700">Available</span>;
@@ -176,8 +183,11 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
         )}
 
         {/* Status Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
           {getStatusBadge()}
+          {cattle.auctionStatus === 'active' && (
+             <span className="badge bg-purple-600 text-white shadow-lg animate-pulse-glow">Auction Live</span>
+          )}
         </div>
 
         {/* Verification Badge */}

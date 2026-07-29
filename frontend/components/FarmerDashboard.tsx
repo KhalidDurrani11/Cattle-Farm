@@ -24,13 +24,14 @@ interface Props {
   onDelete: (id: string) => void;
   onMarkSold: (cattle: Cattle) => void;
   onMarkAvailable: (id: string) => void;
+  onStartAuction: (cattle: Cattle) => void;
   onAddNew: () => void;
 }
 
 const PROVINCES = ['Punjab', 'Sindh', 'KPK', 'Balochistan', 'Gilgit-Baltistan', 'Islamabad'];
 
 export default function FarmerDashboard({
-  listings, stats, pendingInquiries, onEdit, onDelete, onMarkSold, onMarkAvailable, onAddNew
+  listings, stats, pendingInquiries, onEdit, onDelete, onMarkSold, onMarkAvailable, onStartAuction, onAddNew
 }: Props) {
   const [activeTab, setActiveTab] = useState<'listings' | 'inquiries' | 'stats'>('listings');
   const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'sold' | 'reserved'>('all');
@@ -263,6 +264,16 @@ export default function FarmerDashboard({
                         title="Mark as Available"
                       >
                         <XCircle className="w-4 h-4" />
+                      </button>
+                    )}
+
+                    {cattle.status === 'available' && cattle.auctionStatus !== 'active' && (
+                      <button
+                        onClick={() => onStartAuction(cattle)}
+                        className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
+                        title="Start Auction"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-gavel"><path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/></svg>
                       </button>
                     )}
 

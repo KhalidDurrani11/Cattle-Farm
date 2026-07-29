@@ -14,6 +14,8 @@ import cattleRoutes from './routes/cattle.js';
 import userRoutes from './routes/users.js';
 import uploadRoutes from './routes/upload.js';
 import adminRoutes from './routes/admin.js';
+import auctionRoutes from './routes/auctionRoutes.js';
+import transactionRoutes from './routes/transactionRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -63,6 +65,8 @@ app.use('/api/cattle', cattleRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/auctions', auctionRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Root endpoint
 app.get('/', (_req, res) => {

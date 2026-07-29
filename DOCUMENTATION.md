@@ -1,139 +1,78 @@
-# AgriTradeX Sovereign Exchange - Project Documentation
+# AgriTradeX - Detailed System Documentation
 
-## Project Overview
-AgriTradeX is a high-end, premium marketplace platform dedicated to connecting farmers, institutional investors, and elite breeders. The platform facilitates the trade of top-tier heritage livestock across Pakistan to buyers globally while maintaining a "Sovereign Exchange" visual aesthetic (dark-mode, gold-sheen, editorial typography) crafted via the Kinship logic design token methodology. The web application spans a robust Node.js REST API with a fully functional Next.js 14 frontend environment.
+## Overview
+AgriTradeX is a modern, responsive, and secure platform designed to connect farmers, buyers, and veterinarians across Pakistan. The system is built with a **Next.js** frontend (App Router) and an **Express/MongoDB** backend API.
 
----
+## 1. System Architecture
 
-## Technical Stack
-**Frontend:**
-- Next.js 14.2 (App Router & React Server Components)
-- Tailwind CSS (Kinetic Lab Dark & Gold tokens)
-- TypeScript & Lucide React (Icons)
-- Vercel-optimized APIs (Next/Image & Next Caching)
+### Frontend (Next.js 16)
+- **Framework:** Next.js (App Router).
+- **Styling:** Tailwind CSS with custom Earthy/Agrarian color tokens (`primary-600` green, warm ambers).
+- **State Management:** Handled via Context API (`AuthContext`) which persists authentication tokens securely.
+- **Routing:** 
+  - `/` (Home): Landing page showcasing features and call-to-actions.
+  - `/marketplace`: The main browsing interface for cattle.
+  - `/dashboard`: A unified, role-based dashboard for Farmers, Buyers, and Vets.
 
-**Backend:**
-- Node.js & Express.js
-- MongoDB & Mongoose (Cloud Atlas database)
-- JSON Web Tokens (JWT) & bcrypt (Auth layer)
-- Cloudinary (Media storage & image optimization pipeline)
-- Enterprise Security Stack (Helmet, Express Rate Limit, Mongo Sanitize, HPP)
-
----
-
-## Features List
-- **Advanced Market Filtering**: Instant, client-side sorting by breed, category, price parameters, and newest entries.
-- **Sovereign Network Identity**: Full user authentication (Register, Login, JWT verification) featuring encrypted credentials.
-- **Secure File Processing**: Native Cloudinary multi-part data stream for cattle avatar arrays.
-- **Wishlist Escrow Memory**: Fully database-mapped user favorites lists attached to JWT instances.
-- **Dashboard Ecosystem**: Revenue analytics, visual activity stats, and real-time active listing status trackers.
-- **Mobile Responsive Architecture**: Fluid UI adapting elegantly to phones without losing the Premium Desktop feel.
+### Backend (Node.js & Express)
+- **Database:** MongoDB (using Mongoose models).
+- **Authentication:** JWT (JSON Web Tokens) with Google OAuth support.
+- **Image Hosting:** Cloudinary (via Multer).
+- **Security:** Helmet, Express Rate Limit, Mongo Sanitize.
 
 ---
 
-## Folder Structure Explanation
+## 2. Role-Based Logic
 
-```
-cattle/
-├── backend/                      # Complete Express REST API Application
-│   ├── middleware/               # Auth barriers (auth.js)
-│   ├── models/                   # Mongoose Schemas (User, Cattle)
-│   ├── routes/                   # Routing handlers (auth.js, cattle.js, users.js)
-│   ├── .env                      # API Secret credentials (Local DB/Cloudinary)
-│   ├── package.json              # Backend dependencies
-│   └── server.js                 # Central Entry point & Application config
-│
-└── frontend/                     # Next.js Application Architecture
-    ├── app/                      # Page components & Layouts (App Router)
-    ├── components/               # Resuable React building blocks (CattleCard)
-    ├── context/                  # Global Context providers (AuthContext, i18n)
-    ├── lib/                      # API Connectors & TypeScript type safety
-    ├── public/                   # Static assets
-    ├── tailwind.config.ts        # Sovereign UI layout & Design tokens
-    └── package.json              # Frontend libraries (React, Lucide, Tailwind)
-```
+The system identifies users based on their assigned `role`:
 
----
+### A. The Farmer (Seller)
+**Goal:** List cattle, verify their identity, and sell/auction animals.
+1. **Verification:** A Farmer must submit their CNIC (Front and Back). This is processed via the Dashboard (`Verify Identity` tab).
+2. **Adding Cattle:** The Farmer clicks **"Add New Cattle"** on the Dashboard. This opens `AddCattleModal.tsx`, collecting details, images, and setting `availability` to `For Sale`.
+3. **Selling:** A Farmer can manually mark cattle as `Sold`.
+4. **Auctioning:** A Farmer can click the **Gavel (Hammer)** icon on their Dashboard. This sends a POST request to `/api/auctions`, creating a new Auction document in the database and changing the cattle's `auctionStatus` to `active`.
 
-## Database Schema Overview
-*   **User Schema**: Defines user accounts (`name, email, password` encrypted via `bcrypt`, `location, phone`, an array of `favorites` referencing Cattle models, and structural `roles`).
-*   **Cattle Schema**: Maps to market inventory (`name, breed, category` enum values, `price` strict integer constraints, `views` counter, boolean `isVerified`, specific media arrays via Cloudinary strings, referencing back to the `User` Schema map for its `sellerId`).
+### B. The Buyer
+**Goal:** Browse, bid, and purchase cattle.
+1. **Browsing:** The Buyer views `/marketplace`. Cattle with an `active` auction display a purple glowing "Auction Live" badge.
+2. **Inquiries:** If an animal is just for sale, they click **"Send Inquiry"** to open a direct message.
+3. **Bidding:** If an animal is in auction, they click **"Place Bid"**. This opens `BidModal.tsx`.
+   - The system fetches the current highest bid from the backend.
+   - The user inputs a bid higher than the current bid.
+   - A POST request is sent to `/api/auctions/:id/bid`. The database validates the bid and updates the `currentHighestBid`.
 
----
+### C. The Veterinarian (Vet)
+**Goal:** Ensure animal health and safety.
+1. **Reviewing:** Vets use their specific Dashboard view to see `Pending Verifications`.
+2. **Approval/Rejection:** Vets can inspect an animal's details and approve them, adding a "Verified" badge to the listing.
 
-## API Routes Overview
-*   `/api/auth/register` (POST): Establishes users with hashed passwords and dispatches a JWT token buffer.
-*   `/api/auth/login` (POST): Validates active users and initializes active sessions.
-*   `/api/cattle` (GET/POST): Primary marketplace gateway. GET pulls lists (or filtered queries), POST creates authorized new elements.
-*   `/api/cattle/:id` (PUT/DELETE): Protected scope limits ensuring only authentic `sellerId` matches can edit/remove entries.
-*   `/api/users/dashboard` (GET): Specialized authenticated route producing revenue and statistical views for profiles.
-*   `/api/users/favorites` (POST/GET): Syncs local variables strictly with the remote MongoDB `favorites` array state.
+### D. The Admin
+**Goal:** Platform moderation and identity verification.
+1. Admins review and approve Farmer CNIC submissions to ensure platform safety.
 
 ---
 
-## Authentication & Security Features
-*   **Encrypted Secrets**: Pure 12-round bcrypt hash verification ensures database integrity against local rainbow table infiltrations.
-*   **JWT Transports**: Pure Authorization "Bearer" Tokens dispatched over standard API fetch protocols (handled in `AuthContext.tsx`).
-*   **Middleware Defenses**: 
-    - **Helmet**: Secures core X-Powered-By strings and Cross-Site standards.
-    - **Express-Rate-Limit**: Establishes 30 attempt thresholds per 15 mins for `/api/auth` to prevent Brute Forcing.
-    - **Mongo Sanitize**: Obliterates NoSQL injection mechanisms like `$gt` payloads hidden inside login parameters.
-    - **HPP**: Circumvents HTTP payload parameter pollution techniques.
+## 3. Core Features & Code Paths
 
----
+### 1. The Auction Flow (A to Z)
+- **Start Auction (Frontend):** In `FarmerDashboard.tsx`, clicking the Gavel icon triggers `StartAuctionModal.tsx`. The farmer sets a starting price and duration.
+- **API Call:** `POST /api/auctions` is called.
+- **Backend Logic (`auctionRoutes.js`):** 
+  - Verifies the user is the owner of the cattle.
+  - Creates a new `Auction` model document.
+  - Updates the `Cattle` model's `auctionStatus` to `active` and `availability` to `In Auction`.
+- **Viewing the Auction (Frontend):** `Marketplace.tsx` fetches the cattle. If `auctionStatus === 'active'`, `CattleDetailsModal.tsx` renders the `AuctionTimer.tsx` and the `BidModal.tsx` trigger button.
+- **Placing a Bid (Backend):** `POST /api/auctions/:id/bid` checks if the bid is higher than the `currentHighestBid`, verifies the auction hasn't ended, and records the new `Bid` model document.
 
-## Deployment Guide & Environment Layout
+### 2. The Transaction Flow (Offline Payments)
+Since the platform is designed for Pakistan (Quetta/Balochistan), all payments are handled natively offline (JazzCash, Easypaisa, Bank Transfer, COD).
+- When a deal is struck, the Farmer clicks the **"Mark as Sold"** button (`CheckCircle` icon).
+- **API Call:** `PUT /api/cattle/:id/sold` is fired.
+- **Backend Logic:** Changes `status` to `sold`, creates an `OwnershipHistory` document to transfer the animal from the `sellerId` to the `newOwnerId` (if known).
 
-**1. Database Variables (`backend/.env`)**
-```env
-PORT=5000
-MONGO_URI=mongodb+srv://<USER>:<PASS>@<ATLAS_URL>
-JWT_SECRET=super_secret_production_key_64_bytes
-FRONTEND_URL=https://your-frontend-domain.com
-CLOUDINARY_CLOUD_NAME=your_cloud_key
-CLOUDINARY_API_KEY=0000000000
-CLOUDINARY_API_SECRET=your_secret
-```
+## 4. Troubleshooting & Architecture Guidelines
 
-**2. Frontend Variables (`frontend/.env.production`)**
-```env
-NEXT_PUBLIC_API_URL=https://your-backend-api-domain.com
-```
-
-### Hosting on Vercel & Render
-- **Backend (Render)**: Deploy as a "Web Service". Explicitly apply the `backend/` directory as your build root, define the Build Command `npm install`, and Start Command `npm start`. Apply the backend ENV variables in the dashboard setup.
-- **Frontend (Vercel)**: Connect your Github, Vercel will intrinsically detect the "Next.js" engine framework. Add the string corresponding to your deployed Render URL internally to the `NEXT_PUBLIC_API_URL` variable space so it points natively toward the new location.
-
----
-
-## Local Setup - How to Run Project
-
-Ensure you have Node.js (>18) installed and an active Terminal instance open. Note: use two distinct terminal tabs cleanly.
-
-**Step 1: Setup Backend Ecosystem**
-```bash
-cd cattle/backend
-npm install
-npm run dev
-```
-*Ensure you have configured `backend/.env` with MongoDB connection strings prior to starting.*
-
-**Step 2: Setup Frontend Web App**
-```bash
-cd cattle/frontend
-npm install
-npm run dev
-```
-*The App will start securely on `http://localhost:3000` connected gracefully against the backend instance.*
-
-**Step 3: Build for Production Simulation**
-```bash
-cd cattle/frontend
-npm run build
-npm start
-```
-*Triggers ISR optimization rendering ensuring pre-compiled performance matrices pass standard checks.*
-
-## Troubleshooting Note
-- **EADDRINUSE (Port Conflict)**: If `localhost:3000` or `5000` refuses to boot locally, identify dangling node tasks via Task Manager (Windows) or `killall node` (Mac/Linux).
-- **Blank Images**: Ensure Next.js `<Image>` remotePatterns strictly matches your Cloudinary and Google Domains within `next.config.mjs`. Use `npm run build` to reboot domains natively.
+- **Next.js Caching:** Next.js aggressively caches pages and API calls. If the dashboard or marketplace returns a 404 abruptly, it usually means the `.next` compilation cache is corrupted. Running `rm -rf .next` and rebuilding fixes this.
+- **Local vs Live Environments:** Ensure `frontend/.env.local` points to `NEXT_PUBLIC_API_URL=http://localhost:5000` during local development, and `NEXT_PUBLIC_API_URL=https://cattle-farm-jmeo.onrender.com` on Netlify.
+- **No WebSockets:** The system deliberately avoids WebSockets for auctions (relying on REST polling) to ensure stability in regions with intermittent cellular internet (3G/4G).

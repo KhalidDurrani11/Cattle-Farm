@@ -65,6 +65,9 @@ export interface Cattle {
   description?: string;
   images: string[];
   status: 'available' | 'sold' | 'reserved' | 'pending' | 'unavailable';
+  availability?: 'For Sale' | 'For Rent' | 'Sold' | 'In Auction';
+  auctionStatus?: 'active' | 'ended' | 'none';
+  currentOwnerId?: string;
   isFeatured: boolean;
   views: number;
   inquiries: number;

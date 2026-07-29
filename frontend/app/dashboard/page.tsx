@@ -12,6 +12,7 @@ import BuyerDashboard from '@/components/BuyerDashboard';
 import VetDashboard from '@/components/VetDashboard';
 import AddCattleModal from '@/components/AddCattleModal';
 import EditCattleModal from '@/components/EditCattleModal';
+import StartAuctionModal from '@/components/StartAuctionModal';
 import {
   ShieldCheck, Loader2, AlertCircle, User, Home, CheckCircle2,
   UploadCloud, FileText, Save
@@ -48,7 +49,9 @@ function DashboardContent() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCattle, setEditingCattle] = useState<Cattle | null>(null);
   const [showSoldModal, setShowSoldModal] = useState(false);
+  const [showAuctionModal, setShowAuctionModal] = useState(false);
   const [markingSold, setMarkingSold] = useState<Cattle | null>(null);
+  const [auctionCattle, setAuctionCattle] = useState<Cattle | null>(null);
   const [soldPrice, setSoldPrice] = useState('');
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
@@ -104,6 +107,7 @@ function DashboardContent() {
     catch (err: any) { setError(err.message); }
   };
   const handleMarkSold = (cattle: Cattle) => { setMarkingSold(cattle); setSoldPrice(cattle.price.toString()); setShowSoldModal(true); };
+  const handleStartAuction = (cattle: Cattle) => { setAuctionCattle(cattle); setShowAuctionModal(true); };
   const confirmMarkSold = async () => {
     if (!token || !markingSold) return;
     try { await markCattleAsSold(markingSold._id, Number(soldPrice), token); showToast('Marked as sold!'); setShowSoldModal(false); fetchDashboardData(); }
@@ -237,7 +241,7 @@ function DashboardContent() {
           ) : (
             <>
               {(user.role === 'farmer' || user.role === 'trader') && (
-                <FarmerDashboard listings={dashboardData?.listings || []} stats={dashboardData?.stats || {}} pendingInquiries={dashboardData?.pendingInquiries || []} onEdit={handleEdit} onDelete={handleDelete} onMarkSold={handleMarkSold} onMarkAvailable={handleMarkAvailable} onAddNew={() => setShowAddModal(true)} />
+                <FarmerDashboard listings={dashboardData?.listings || []} stats={dashboardData?.stats || {}} pendingInquiries={dashboardData?.pendingInquiries || []} onEdit={handleEdit} onDelete={handleDelete} onMarkSold={handleMarkSold} onMarkAvailable={handleMarkAvailable} onStartAuction={handleStartAuction} onAddNew={() => setShowAddModal(true)} />
               )}
               {user.role === 'buyer' && (
                 <BuyerDashboard purchases={dashboardData?.purchases || []} inquiries={dashboardData?.inquiries || []} favorites={dashboardData?.favorites || []} stats={dashboardData?.stats || {}} />
@@ -380,6 +384,7 @@ function DashboardContent() {
         {/* Modals */}
         {showAddModal && <AddCattleModal onClose={() => setShowAddModal(false)} onSuccess={() => { fetchDashboardData(); showToast('Cattle added!'); }} />}
         {showEditModal && editingCattle && <EditCattleModal cattle={editingCattle} onClose={() => { setShowEditModal(false); setEditingCattle(null); }} onSuccess={() => { fetchDashboardData(); showToast('Cattle updated!'); }} />}
+        {showAuctionModal && auctionCattle && <StartAuctionModal cattle={auctionCattle} onClose={() => { setShowAuctionModal(false); setAuctionCattle(null); }} onSuccess={() => { fetchDashboardData(); showToast('Auction started!'); }} />}
         {showSoldModal && markingSold && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl">
