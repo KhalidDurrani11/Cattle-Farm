@@ -121,41 +121,6 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/users/:id/profile — public, seller profile
-router.get('/:id/profile', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).select('-password -cnic');
-    if (!user) return res.status(404).json({ message: 'User not found.' });
-
-    const listings = await Cattle.find({ sellerId: req.params.id, status: 'available' })
-      .sort({ createdAt: -1 });
-
-    const soldCount = await Cattle.countDocuments({ sellerId: req.params.id, status: 'sold' });
-
-    // Get reviews
-    const reviews = await Review.find({ reviewedId: req.params.id })
-      .populate('reviewerId', 'name avatar')
-      .sort({ createdAt: -1 })
-      .limit(10);
-
-    res.json({
-      user,
-      listings,
-      stats: {
-        totalListings: listings.length,
-        soldCount,
-        reviewCount: reviews.length,
-        averageRating: reviews.length > 0
-          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-          : 0,
-      },
-      reviews,
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error.' });
-  }
-});
-
 // PUT /api/users/profile — protected, update own profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
@@ -176,6 +141,7 @@ router.put('/profile', authMiddleware, async (req, res) => {
 });
 
 // GET /api/users/favorites — protected, get user's favorited cattle
+// NOTE: Must be BEFORE /:id/profile to prevent Express matching 'favorites' as an :id
 router.get('/favorites', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
@@ -217,6 +183,42 @@ router.post('/favorites/:cattleId', authMiddleware, async (req, res) => {
   }
 });
 
+// GET /api/users/:id/profile — public, seller profile
+// NOTE: Must be AFTER all static routes to prevent :id swallowing them
+router.get('/:id/profile', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password -cnic');
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    const listings = await Cattle.find({ sellerId: req.params.id, status: 'available' })
+      .sort({ createdAt: -1 });
+
+    const soldCount = await Cattle.countDocuments({ sellerId: req.params.id, status: 'sold' });
+
+    // Get reviews
+    const reviews = await Review.find({ reviewedId: req.params.id })
+      .populate('reviewerId', 'name avatar')
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.json({
+      user,
+      listings,
+      stats: {
+        totalListings: listings.length,
+        soldCount,
+        reviewCount: reviews.length,
+        averageRating: reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0,
+      },
+      reviews,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 // GET /api/users/notifications — protected, get user notifications
 router.get('/notifications', authMiddleware, async (req, res) => {
   try {
@@ -229,17 +231,8 @@ router.get('/notifications', authMiddleware, async (req, res) => {
   }
 });
 
-// PUT /api/users/notifications/:id/read — protected, mark notification as read
-router.put('/notifications/:id/read', authMiddleware, async (req, res) => {
-  try {
-    await Notification.findByIdAndUpdate(req.params.id, { isRead: true });
-    res.json({ message: 'Notification marked as read.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error.' });
-  }
-});
-
 // PUT /api/users/notifications/read-all — protected, mark all notifications as read
+// NOTE: Must be BEFORE /notifications/:id/read to avoid 'read-all' being matched as :id
 router.put('/notifications/read-all', authMiddleware, async (req, res) => {
   try {
     await Notification.updateMany(
@@ -247,6 +240,16 @@ router.put('/notifications/read-all', authMiddleware, async (req, res) => {
       { isRead: true }
     );
     res.json({ message: 'All notifications marked as read.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// PUT /api/users/notifications/:id/read — protected, mark notification as read
+router.put('/notifications/:id/read', authMiddleware, async (req, res) => {
+  try {
+    await Notification.findByIdAndUpdate(req.params.id, { isRead: true });
+    res.json({ message: 'Notification marked as read.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });
   }

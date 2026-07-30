@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import Cattle from '../models/Cattle.js';
 import User from '../models/User.js';
 import Notification from '../models/Notification.js';

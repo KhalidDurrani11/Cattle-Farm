@@ -27,6 +27,7 @@ const getOrCreateConfig = async () => {
 };
 
 // GET /api/bookings/config - Public/Buyer: Get admin bank details
+// NOTE: Must be BEFORE /:id to prevent 'config' being matched as a booking id
 router.get('/config', async (_req, res) => {
   try {
     const config = await getOrCreateConfig();
@@ -37,6 +38,7 @@ router.get('/config', async (_req, res) => {
 });
 
 // PUT /api/bookings/admin/config - Admin: Update bank details
+// NOTE: Must be BEFORE /:id routes
 router.put('/admin/config', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const {
@@ -61,6 +63,124 @@ router.put('/admin/config', authMiddleware, adminMiddleware, async (req, res) =>
     res.json({ message: 'Booking account configuration updated.', config });
   } catch (error) {
     res.status(500).json({ message: 'Error updating bank configuration.' });
+  }
+});
+
+// GET /api/bookings/my-bookings - Protected (Buyer): Get buyer's bookings
+// NOTE: Must be BEFORE /:id to prevent 'my-bookings' being matched as a booking id
+router.get('/my-bookings', authMiddleware, async (req, res) => {
+  try {
+    const bookings = await Booking.find({ buyerId: req.user.userId })
+      .populate('cattleId')
+      .sort({ updatedAt: -1 })
+      .lean();
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching bookings.' });
+  }
+});
+
+// GET /api/bookings/admin/all - Admin: List all bookings
+// NOTE: Must be BEFORE /:id to prevent 'admin' being matched as a booking id
+router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { status } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+
+    const bookings = await Booking.find(filter)
+      .populate('cattleId')
+      .populate('buyerId', 'name email phone avatar')
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching admin bookings.' });
+  }
+});
+
+// PUT /api/bookings/admin/:id/approve - Admin: Approve payment & mark cattle as reserved/booked
+// NOTE: Must be BEFORE /:id/messages etc. to prevent 'admin' being matched as booking id
+router.put('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { adminNotes } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found.' });
+
+    booking.status = 'approved';
+    if (adminNotes) booking.adminNotes = adminNotes;
+
+    // Update Cattle status to reserved (Booked)
+    const cattle = await Cattle.findById(booking.cattleId);
+    if (cattle) {
+      cattle.status = 'reserved';
+      cattle.availability = 'Sold';
+      cattle.buyerId = booking.buyerId;
+      await cattle.save();
+    }
+
+    // Clear backend animal cache so marketplace updates instantly
+    cattleCache.clear();
+
+    booking.messages.push({
+      sender: 'system',
+      senderName: 'AgriTradeX System',
+      text: '🎉 PAYMENT APPROVED! Your payment has been verified by Admin. This animal is now officially BOOKED for you!',
+      createdAt: new Date(),
+    });
+
+    booking.updatedAt = new Date();
+    await booking.save();
+
+    // Notify Buyer
+    await Notification.create({
+      userId: booking.buyerId,
+      title: 'Booking Payment Approved! 🐮',
+      message: `Your payment for "${cattle?.name || 'Animal'}" has been approved by Admin! The animal is now booked.`,
+      type: 'success',
+    });
+
+    res.json({ message: 'Payment approved successfully. Animal marked as booked.', booking, cattle });
+  } catch (error) {
+    console.error('Approve booking error:', error);
+    res.status(500).json({ message: 'Error approving payment.' });
+  }
+});
+
+// PUT /api/bookings/admin/:id/reject - Admin: Reject payment proof
+router.put('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found.' });
+
+    booking.status = 'rejected';
+    booking.adminNotes = reason || 'Invalid payment receipt.';
+
+    const cattle = await Cattle.findById(booking.cattleId);
+
+    booking.messages.push({
+      sender: 'system',
+      senderName: 'AgriTradeX System',
+      text: `❌ PAYMENT REJECTED: ${reason || 'Receipt unverified or invalid'}. Please re-check payment details and upload a valid screenshot.`,
+      createdAt: new Date(),
+    });
+
+    booking.updatedAt = new Date();
+    await booking.save();
+
+    // Notify Buyer
+    await Notification.create({
+      userId: booking.buyerId,
+      title: 'Booking Payment Status',
+      message: `Your booking payment proof for "${cattle?.name || 'Animal'}" was rejected: ${reason || 'Invalid screenshot'}.`,
+      type: 'error',
+    });
+
+    res.json({ message: 'Payment rejected.', booking });
+  } catch (error) {
+    res.status(500).json({ message: 'Error rejecting payment.' });
   }
 });
 
@@ -123,20 +243,8 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/bookings/my-bookings - Protected (Buyer): Get buyer's bookings
-router.get('/my-bookings', authMiddleware, async (req, res) => {
-  try {
-    const bookings = await Booking.find({ buyerId: req.user.userId })
-      .populate('cattleId')
-      .sort({ updatedAt: -1 })
-      .lean();
-    res.json(bookings);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching bookings.' });
-  }
-});
-
 // GET /api/bookings/:id - Protected: Get single booking details & chat
+// NOTE: This dynamic route must be AFTER all static routes (/config, /my-bookings, /admin/*)
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -238,108 +346,6 @@ router.post('/:id/payment', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Submit payment error:', error);
     res.status(500).json({ message: 'Error submitting payment screenshot.' });
-  }
-});
-
-// GET /api/bookings/admin/all - Admin: List all bookings
-router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { status } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-
-    const bookings = await Booking.find(filter)
-      .populate('cattleId')
-      .populate('buyerId', 'name email phone avatar')
-      .sort({ updatedAt: -1 })
-      .lean();
-
-    res.json(bookings);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching admin bookings.' });
-  }
-});
-
-// PUT /api/bookings/admin/:id/approve - Admin: Approve payment & mark cattle as reserved/booked
-router.put('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { adminNotes } = req.body;
-    const booking = await Booking.findById(req.params.id);
-    if (!booking) return res.status(404).json({ message: 'Booking not found.' });
-
-    booking.status = 'approved';
-    if (adminNotes) booking.adminNotes = adminNotes;
-
-    // Update Cattle status to reserved (Booked)
-    const cattle = await Cattle.findById(booking.cattleId);
-    if (cattle) {
-      cattle.status = 'reserved';
-      cattle.availability = 'Sold';
-      cattle.buyerId = booking.buyerId;
-      await cattle.save();
-    }
-
-    // Clear backend animal cache so marketplace updates instantly
-    cattleCache.clear();
-
-    booking.messages.push({
-      sender: 'system',
-      senderName: 'AgriTradeX System',
-      text: '🎉 PAYMENT APPROVED! Your payment has been verified by Admin. This animal is now officially BOOKED for you!',
-      createdAt: new Date(),
-    });
-
-    booking.updatedAt = new Date();
-    await booking.save();
-
-    // Notify Buyer
-    await Notification.create({
-      userId: booking.buyerId,
-      title: 'Booking Payment Approved! 🐮',
-      message: `Your payment for "${cattle?.name || 'Animal'}" has been approved by Admin! The animal is now booked.`,
-      type: 'success',
-    });
-
-    res.json({ message: 'Payment approved successfully. Animal marked as booked.', booking, cattle });
-  } catch (error) {
-    console.error('Approve booking error:', error);
-    res.status(500).json({ message: 'Error approving payment.' });
-  }
-});
-
-// PUT /api/bookings/admin/:id/reject - Admin: Reject payment proof
-router.put('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { reason } = req.body;
-    const booking = await Booking.findById(req.params.id);
-    if (!booking) return res.status(404).json({ message: 'Booking not found.' });
-
-    booking.status = 'rejected';
-    booking.adminNotes = reason || 'Invalid payment receipt.';
-
-    const cattle = await Cattle.findById(booking.cattleId);
-
-    booking.messages.push({
-      sender: 'system',
-      senderName: 'AgriTradeX System',
-      text: `❌ PAYMENT REJECTED: ${reason || 'Receipt unverified or invalid'}. Please re-check payment details and upload a valid screenshot.`,
-      createdAt: new Date(),
-    });
-
-    booking.updatedAt = new Date();
-    await booking.save();
-
-    // Notify Buyer
-    await Notification.create({
-      userId: booking.buyerId,
-      title: 'Booking Payment Status',
-      message: `Your booking payment proof for "${cattle?.name || 'Animal'}" was rejected: ${reason || 'Invalid screenshot'}.`,
-      type: 'error',
-    });
-
-    res.json({ message: 'Payment rejected.', booking });
-  } catch (error) {
-    res.status(500).json({ message: 'Error rejecting payment.' });
   }
 });
 

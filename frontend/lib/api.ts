@@ -283,11 +283,11 @@ export async function rejectCattle(cattleId: string, reason: string, token: stri
   return handleResponse(res);
 }
 
-export async function socialLogin(email: string, name: string, provider: string) {
+export async function socialLogin(token: string, provider: string) {
   const res = await fetch(`${API_BASE}/api/auth/social-login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, name, provider }),
+    body: JSON.stringify({ token, provider }),
   });
   return handleResponse<{ token: string; user: any }>(res);
 }
