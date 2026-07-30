@@ -63,7 +63,7 @@ export default function CattleCard({ cattle, onView, viewMode = 'grid', initialF
       case 'For Rent':
         return <span className="badge bg-amber-100 text-amber-700">For Rent</span>;
       case 'reserved':
-        return <span className="badge bg-amber-100 text-amber-700">Reserved</span>;
+        return <span className="badge bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold border border-amber-300 dark:border-amber-800">🔒 Booked</span>;
       case 'For Sale':
       case 'available':
       default:

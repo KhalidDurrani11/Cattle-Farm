@@ -1,12 +1,14 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Cattle } from '@/types';
 import { useAuth } from '@/context/AuthContext';
-import { ShieldCheck, BadgeCheck, Calendar, MapPin, User, CheckCircle, XCircle, Gavel } from 'lucide-react';
+import { ShieldCheck, BadgeCheck, Calendar, MapPin, User, CheckCircle, XCircle, Gavel, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import AuctionTimer from './AuctionTimer';
 import BidModal from './BidModal';
+import BookingChatModal from './BookingChatModal';
 
 const CATEGORY_EMOJI: Record<string, string> = {
   Bull: '🐂', Cow: '🐄', Calf: '🐮', Buffalo: '🦬', Goat: '🐐', Sheep: '🐑', Other: '🐾',
@@ -19,8 +21,10 @@ interface Props {
 
 export default function CattleDetailsModal({ cattle, onClose }: Props) {
   const { user } = useAuth();
+  const router = useRouter();
   const [imgIdx, setImgIdx] = useState(0);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const seller = typeof cattle.sellerId === 'object' ? cattle.sellerId : null;
 
   const isVerified = cattle.verification?.status === 'verified';
@@ -239,9 +243,22 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {cattle.status === 'available' ? (
               <>
+                <button
+                  onClick={() => {
+                    if (!user) {
+                      router.push('/login');
+                      return;
+                    }
+                    setIsBookingModalOpen(true);
+                  }}
+                  className="flex-1 bg-[#1E4620] hover:bg-green-800 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 text-base"
+                >
+                  <ShoppingBag className="w-5 h-5 text-green-300" /> Book Now
+                </button>
+
                 <button
                   onClick={() => {
                     const phone = seller?.phone?.replace(/\D/g, '');
@@ -249,24 +266,15 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
                       window.open(`https://wa.me/${phone.startsWith('92') ? phone : '92' + phone}?text=Hi, I'm interested in your ${cattle.name}`, '_blank');
                     }
                   }}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
                 >
                   📱 Contact on WhatsApp
                 </button>
 
-                {user?.role === 'buyer' && (
-                  <Link
-                    href={`/dashboard?inquiry=${cattle._id}`}
-                    className="flex-1 bg-primary hover:bg-primary-700 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                  >
-                    Send Inquiry
-                  </Link>
-                )}
-                
                 {cattle.auctionStatus === 'active' && user?.role !== 'farmer' && (
                   <button
                     onClick={() => setIsBidModalOpen(true)}
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-purple-600/30"
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-purple-600/30 text-sm"
                   >
                     <Gavel className="w-5 h-5" /> Place Bid
                   </button>
@@ -275,9 +283,9 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
             ) : (
               <button
                 disabled
-                className="w-full bg-gray-200 text-gray-500 font-medium py-3 rounded-xl cursor-not-allowed"
+                className="w-full bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-bold py-3.5 rounded-xl cursor-not-allowed border border-amber-300 dark:border-amber-800"
               >
-                {cattle.status === 'sold' ? 'Sold Out' : 'Reserved'}
+                {cattle.status === 'sold' ? 'Sold Out' : '🔒 Booked / Reserved'}
               </button>
             )}
           </div>
@@ -292,6 +300,18 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
           cattleId={cattle._id}
           startingPrice={cattle.price}
           onBidSuccess={() => { setIsBidModalOpen(false); alert('Bid placed successfully!'); }}
+        />
+      )}
+
+      {/* Booking Chat Modal */}
+      {isBookingModalOpen && (
+        <BookingChatModal
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+          cattle={cattle}
+          onBookingUpdated={() => {
+            // refresh page or status if needed
+          }}
         />
       )}
     </div>

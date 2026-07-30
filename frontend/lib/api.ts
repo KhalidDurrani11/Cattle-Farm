@@ -347,3 +347,86 @@ export async function adminDeleteListing(id: string, token: string) {
   });
   return handleResponse(res);
 }
+
+// Bookings & Admin Chat
+export async function getBookingConfig() {
+  const res = await fetch(`${API_BASE}/api/bookings/config`);
+  return handleResponse<any>(res);
+}
+
+export async function updateBookingConfig(data: any, token: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/admin/config`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function createOrGetBooking(cattleId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/bookings`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify({ cattleId }),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function getMyBookings(token: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/my-bookings`, {
+    headers: authHeaders(token),
+  });
+  return handleResponse<any[]>(res);
+}
+
+export async function getBookingById(id: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/${id}`, {
+    headers: authHeaders(token),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function sendBookingMessage(id: string, text: string, token: string, image?: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/${id}/messages`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify({ text, image }),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function submitBookingPayment(id: string, paymentScreenshot: string, token: string, paymentRef?: string, paidAmount?: number) {
+  const res = await fetch(`${API_BASE}/api/bookings/${id}/payment`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify({ paymentScreenshot, paymentRef, paidAmount }),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function getAdminBookings(token: string, status?: string) {
+  const query = status ? `?status=${status}` : '';
+  const res = await fetch(`${API_BASE}/api/bookings/admin/all${query}`, {
+    headers: authHeaders(token),
+  });
+  return handleResponse<any[]>(res);
+}
+
+export async function approveAdminBooking(id: string, token: string, adminNotes?: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/admin/${id}/approve`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ adminNotes }),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function rejectAdminBooking(id: string, reason: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/bookings/admin/${id}/reject`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify({ reason }),
+  });
+  return handleResponse<any>(res);
+}
+
