@@ -48,13 +48,13 @@ export default function Footer() {
            <h4 className="font-sans font-bold text-white mb-6 uppercase tracking-wider text-sm">Support</h4>
            <ul className="space-y-4 text-sm">
              <li className="flex items-center gap-3 text-[#a8a29e]">
-               <Phone className="w-4 h-4 text-[#8FBC8F]" /> +92 300 000 0000
+               <Phone className="w-4 h-4 text-[#8FBC8F]" /> +923343199005
              </li>
              <li className="flex items-center gap-3 text-[#a8a29e]">
                <Mail className="w-4 h-4 text-[#8FBC8F]" /> support@cattletrading.pk
              </li>
              <li className="flex items-center gap-3 text-[#a8a29e]">
-               <MapPin className="w-4 h-4 text-[#8FBC8F]" /> Lahore, Pakistan
+               <MapPin className="w-4 h-4 text-[#8FBC8F]" /> Quetta, Pakistan
              </li>
            </ul>
         </div>
