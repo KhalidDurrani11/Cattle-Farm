@@ -52,9 +52,14 @@ const cattleSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 cattleSchema.index({ status: 1, createdAt: -1 });
+cattleSchema.index({ status: 1, isFeatured: 1, 'verification.status': 1, createdAt: -1 });
+cattleSchema.index({ status: 1, category: 1, createdAt: -1 });
+cattleSchema.index({ status: 1, breed: 1, createdAt: -1 });
+cattleSchema.index({ status: 1, province: 1, createdAt: -1 });
+cattleSchema.index({ status: 1, price: 1 });
+cattleSchema.index({ status: 1, views: -1 });
 cattleSchema.index({ sellerId: 1, status: 1 });
 cattleSchema.index({ category: 1, breed: 1 });
-cattleSchema.index({ price: 1 });
 cattleSchema.index({ location: 'text', district: 'text', description: 'text' });
 cattleSchema.index({ 'verification.status': 1 });
 cattleSchema.index({ isFeatured: 1 });

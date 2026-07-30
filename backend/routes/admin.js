@@ -2,6 +2,7 @@ import express from 'express';
 import User from '../models/User.js';
 import Cattle from '../models/Cattle.js';
 import authMiddleware from '../middleware/auth.js';
+import { cattleCache } from '../utils/cache.js';
 
 const router = express.Router();
 
@@ -143,6 +144,7 @@ router.put('/cattle/:id/verify', authMiddleware, adminMiddleware, async (req, re
     cattle.verification.isVerified = true;
 
     await cattle.save();
+    cattleCache.clear();
 
     // Notify seller
     const Notification = (await import('../models/Notification.js')).default;
@@ -171,6 +173,7 @@ router.put('/cattle/:id/reject', authMiddleware, adminMiddleware, async (req, re
     cattle.verification.rejectionReason = reason;
 
     await cattle.save();
+    cattleCache.clear();
 
     // Notify seller
     const Notification = (await import('../models/Notification.js')).default;
@@ -250,6 +253,7 @@ router.put('/listings/:id/approve', authMiddleware, adminMiddleware, async (req,
 
     cattle.status = 'available';
     await cattle.save();
+    cattleCache.clear();
 
     // Notify seller
     const Notification = (await import('../models/Notification.js')).default;
@@ -275,6 +279,7 @@ router.put('/listings/:id/reject', authMiddleware, adminMiddleware, async (req, 
 
     cattle.status = 'unavailable';
     await cattle.save();
+    cattleCache.clear();
 
     // Notify seller
     const Notification = (await import('../models/Notification.js')).default;
@@ -345,6 +350,7 @@ router.delete('/listings/:id', authMiddleware, strictAdminMiddleware, async (req
     if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
 
     await cattle.deleteOne();
+    cattleCache.clear();
     res.json({ message: 'Listing deleted by admin successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error deleting listing.' });

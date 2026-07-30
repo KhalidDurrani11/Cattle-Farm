@@ -3,13 +3,25 @@ import Cattle from '../models/Cattle.js';
 import User from '../models/User.js';
 import Notification from '../models/Notification.js';
 import authMiddleware from '../middleware/auth.js';
+import { cattleCache } from '../utils/cache.js';
 
 const router = express.Router();
 
 // GET /api/cattle — public, get all active listings
 router.get('/', async (req, res) => {
   try {
+    const cacheKey = `cattle:${JSON.stringify(req.query)}`;
+    const cachedData = cattleCache.get(cacheKey);
+    if (cachedData) {
+      res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
+      return res.json(cachedData);
+    }
+
     const { breed, category, minPrice, maxPrice, location, province, status, verificationStatus, sortBy, page = 1, limit = 20 } = req.query;
+
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, Number(limit) || 20));
+    const skip = (pageNum - 1) * limitNum;
 
     const filter = {};
 
@@ -50,25 +62,32 @@ router.get('/', async (req, res) => {
     if (sortBy === 'views') sort = { views: -1 };
     if (sortBy === 'oldest') sort = { createdAt: 1 };
 
-    const skip = (Number(page) - 1) * Number(limit);
+    const cattle = await Cattle.find(filter)
+      .populate('sellerId', 'name avatar location district province verificationStatus rating ratingCount')
+      .sort(sort)
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
 
-    const [cattle, total] = await Promise.all([
-      Cattle.find(filter)
-        .populate('sellerId', 'name email phone location district province avatar verificationStatus rating ratingCount')
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit)),
-      Cattle.countDocuments(filter)
-    ]);
+    let total;
+    if (pageNum === 1 && cattle.length < limitNum) {
+      total = cattle.length;
+    } else {
+      total = await Cattle.countDocuments(filter);
+    }
 
-    res.json({
+    const responsePayload = {
       data: cattle,
       pagination: {
-        current: Number(page),
-        pages: Math.ceil(total / Number(limit)),
+        current: pageNum,
+        pages: Math.ceil(total / limitNum) || 1,
         total,
       },
-    });
+    };
+
+    cattleCache.set(cacheKey, responsePayload, 30000);
+    res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
+    res.json(responsePayload);
   } catch (error) {
     console.error('Get cattle error:', error);
     res.status(500).json({ message: 'Server error fetching listings.' });
@@ -78,15 +97,25 @@ router.get('/', async (req, res) => {
 // GET /api/cattle/featured - Get featured listings
 router.get('/featured', async (req, res) => {
   try {
+    const cacheKey = 'cattle:featured';
+    const cachedData = cattleCache.get(cacheKey);
+    if (cachedData) {
+      res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+      return res.json(cachedData);
+    }
+
     const cattle = await Cattle.find({
       status: { $in: ['available', 'reserved'] },
       isFeatured: true,
       'verification.status': 'verified'
     })
-      .populate('sellerId', 'name location rating verificationStatus')
+      .populate('sellerId', 'name location rating verificationStatus avatar')
       .sort({ createdAt: -1 })
-      .limit(6);
+      .limit(6)
+      .lean();
 
+    cattleCache.set(cacheKey, cattle, 60000);
+    res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
     res.json(cattle);
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });
@@ -102,7 +131,8 @@ router.get('/my-listings', authMiddleware, async (req, res) => {
 
     const cattle = await Cattle.find(filter)
       .populate('buyerId', 'name phone')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.json(cattle);
   } catch (error) {
@@ -161,7 +191,9 @@ router.get('/:id', async (req, res) => {
       req.params.id,
       { $inc: { views: 1 } },
       { new: true }
-    ).populate('sellerId', 'name email phone location district province avatar verificationStatus rating ratingCount joinedAt');
+    )
+      .populate('sellerId', 'name email phone location district province avatar verificationStatus rating ratingCount joinedAt')
+      .lean();
 
     if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
 
@@ -194,6 +226,8 @@ router.post('/', authMiddleware, async (req, res) => {
 
     // Update user's total listings count
     await User.findByIdAndUpdate(req.user.userId, { $inc: { totalListings: 1 } });
+
+    cattleCache.clear();
 
     const populated = await cattle.populate('sellerId', 'name email location rating');
     res.status(201).json(populated);
@@ -231,6 +265,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     cattle.updatedAt = new Date();
     await cattle.save();
 
+    cattleCache.clear();
+
     res.json(cattle);
   } catch (error) {
     console.error('Update cattle error:', error);
@@ -249,6 +285,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 
     await cattle.deleteOne();
+    cattleCache.clear();
     res.json({ message: 'Listing deleted successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error deleting listing.' });
@@ -278,6 +315,8 @@ router.post('/:id/mark-sold', authMiddleware, async (req, res) => {
       $inc: { totalSales: 1, totalRevenue: cattle.soldPrice || cattle.price }
     });
 
+    cattleCache.clear();
+
     res.json({ message: 'Listing marked as sold.', cattle });
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });
@@ -300,6 +339,8 @@ router.post('/:id/mark-available', authMiddleware, async (req, res) => {
     cattle.buyerId = undefined;
 
     await cattle.save();
+
+    cattleCache.clear();
 
     res.json({ message: 'Listing marked as available.', cattle });
   } catch (error) {
@@ -329,6 +370,8 @@ router.post('/:id/verification', authMiddleware, async (req, res) => {
 
     await cattle.save();
 
+    cattleCache.clear();
+
     res.json({ message: 'Verification request submitted.', cattle });
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });
@@ -338,7 +381,7 @@ router.post('/:id/verification', authMiddleware, async (req, res) => {
 // GET /api/cattle/:id/verification/status — get verification status
 router.get('/:id/verification/status', async (req, res) => {
   try {
-    const cattle = await Cattle.findById(req.params.id).select('verification');
+    const cattle = await Cattle.findById(req.params.id).select('verification').lean();
     if (!cattle) return res.status(404).json({ message: 'Listing not found.' });
     res.json(cattle.verification);
   } catch (error) {
