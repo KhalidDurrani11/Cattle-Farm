@@ -99,7 +99,7 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
             </div>
             {cattle.auctionStatus === 'active' && (
               <div className="mt-2 sm:mt-0">
-                <AuctionTimer endTime={new Date(Date.now() + 86400000)} /> {/* Mock 24h timer for now, would use cattle.auctionEndTime */}
+                <AuctionTimer endTime={new Date(Date.now() + 86400000)} />
               </div>
             )}
           </div>
@@ -289,10 +289,9 @@ export default function CattleDetailsModal({ cattle, onClose }: Props) {
         <BidModal
           isOpen={isBidModalOpen}
           onClose={() => setIsBidModalOpen(false)}
-          auctionId={cattle._id} // Using cattle ID for now
-          currentHighestBid={cattle.price}
+          cattleId={cattle._id}
           startingPrice={cattle.price}
-          onBidSuccess={() => alert('Bid placed successfully!')}
+          onBidSuccess={() => { setIsBidModalOpen(false); alert('Bid placed successfully!'); }}
         />
       )}
     </div>

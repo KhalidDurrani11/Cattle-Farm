@@ -31,7 +31,7 @@ export default function StartAuctionModal({ cattle, onClose, onSuccess }: Props)
       const startTime = new Date();
       const endTime = new Date(startTime.getTime() + form.durationHours * 60 * 60 * 1000);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auctions`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auctions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -13,8 +13,8 @@ router.post('/offline-payment', auth, async (req, res) => {
     const cattle = await Cattle.findById(cattleId);
     if (!cattle) return res.status(404).json({ message: 'Cattle not found' });
     
-    // Check if seller is current owner
-    if (cattle.sellerId.toString() !== req.user.id && cattle.currentOwnerId?.toString() !== req.user.id) {
+    // Check if seller is current owner (JWT payload uses userId, not id)
+    if (cattle.sellerId.toString() !== req.user.userId && cattle.currentOwnerId?.toString() !== req.user.userId) {
       return res.status(403).json({ message: 'Not authorized to sell this cattle' });
     }
 
