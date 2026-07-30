@@ -270,6 +270,69 @@ export default function BookingChatModal({ isOpen, onClose, cattle, existingBook
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-gray-50/50 dark:bg-[#141614]">
 
+          {/* Commission Breakdown & COD Policy Note */}
+          {(() => {
+            const commissionRate = booking?.commissionRate ?? (config?.commissionRate ?? 3);
+            const animalPrice = booking?.animalPrice ?? cattle.price;
+            const commissionAmount = booking?.commissionAmount ?? Math.ceil((animalPrice * commissionRate) / 100);
+            const remainingAmount = animalPrice - commissionAmount;
+            return (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl p-4 shadow-md">
+                <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-amber-200 dark:border-amber-800/50">
+                  <span className="text-xl">📋</span>
+                  <h3 className="font-extrabold text-amber-900 dark:text-amber-300 text-sm sm:text-base tracking-tight">
+                    Booking Terms — How It Works
+                  </h3>
+                </div>
+
+                {/* Commission Calculation */}
+                <div className="bg-white/70 dark:bg-amber-950/40 rounded-xl p-3.5 mb-3 border border-amber-200 dark:border-amber-800/40">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-amber-300/80 mb-2 font-semibold uppercase tracking-wide">
+                    <span>Payment Breakdown</span>
+                    <span className="bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-300 px-2 py-0.5 rounded font-bold text-[10px]">
+                      {commissionRate}% Commission Only
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Animal Price</span>
+                      <span className="font-bold text-gray-900 dark:text-white">₨{animalPrice.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between bg-amber-100 dark:bg-amber-900/40 rounded-lg px-3 py-2 border border-amber-300 dark:border-amber-700">
+                      <span className="font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                        <span className="text-base">💳</span> Pay Now ({commissionRate}% Commission)
+                      </span>
+                      <span className="font-black text-lg text-amber-700 dark:text-amber-300">₨{commissionAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                        <span className="text-base">🚚</span> Cash on Delivery (remaining)
+                      </span>
+                      <span className="font-bold text-gray-700 dark:text-gray-300">₨{remainingAmount.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* COD Note Steps */}
+                <div className="space-y-1.5 text-xs text-amber-900 dark:text-amber-300 font-medium">
+                  <div className="flex items-start gap-2">
+                    <span className="text-base leading-none mt-0.5">1️⃣</span>
+                    <p>Pay <strong className="text-amber-800 dark:text-amber-200">₨{commissionAmount.toLocaleString()}</strong> ({commissionRate}% platform commission) to the Admin account below.</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-base leading-none mt-0.5">2️⃣</span>
+                    <p>Upload your <strong>payment screenshot</strong> in this chat — your booking will be confirmed within minutes.</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-base leading-none mt-0.5">3️⃣</span>
+                    <p>The animal will be <strong>delivered to you</strong> and you pay the remaining <strong>₨{remainingAmount.toLocaleString()}</strong> in <strong>Cash on Delivery (COD)</strong>.</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Admin Bank Details Box */}
           <div className="bg-gradient-to-r from-emerald-900/90 to-green-950 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-emerald-500/20">
             <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-2">

@@ -561,6 +561,31 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
+              {/* Commission Rate */}
+              <div className="bg-slate-950 border border-emerald-800/40 rounded-xl p-4">
+                <label className="block text-xs font-bold text-emerald-300 mb-1 uppercase tracking-wide">
+                  Platform Commission Rate (%)
+                </label>
+                <p className="text-[11px] text-slate-400 mb-3">
+                  Buyers pay only this % of the animal price as booking commission. Remaining balance is collected as Cash on Delivery.
+                </p>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={bankConfig.commissionRate ?? 3}
+                    onChange={(e) => setBankConfig({ ...bankConfig, commissionRate: Number(e.target.value) })}
+                    className="w-28 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold text-lg text-center focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <div className="text-slate-300 text-sm">
+                    <span className="font-bold text-emerald-400 text-lg">{bankConfig.commissionRate ?? 3}%</span>
+                    <span className="text-slate-500 text-xs ml-2">of animal price</span>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">Payment Instructions for Buyers</label>
                 <textarea

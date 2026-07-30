@@ -41,7 +41,8 @@ router.put('/admin/config', authMiddleware, adminMiddleware, async (req, res) =>
   try {
     const {
       bankName, accountTitle, accountNumber, iban,
-      easypaisaNumber, easypaisaTitle, jazzcashNumber, jazzcashTitle, instructions
+      easypaisaNumber, easypaisaTitle, jazzcashNumber, jazzcashTitle,
+      instructions, commissionRate
     } = req.body;
 
     let config = await getOrCreateConfig();
@@ -54,6 +55,7 @@ router.put('/admin/config', authMiddleware, adminMiddleware, async (req, res) =>
     if (jazzcashNumber !== undefined) config.jazzcashNumber = jazzcashNumber;
     if (jazzcashTitle !== undefined) config.jazzcashTitle = jazzcashTitle;
     if (instructions !== undefined) config.instructions = instructions;
+    if (commissionRate !== undefined) config.commissionRate = Number(commissionRate);
 
     await config.save();
     res.json({ message: 'Booking account configuration updated.', config });
@@ -79,13 +81,26 @@ router.post('/', authMiddleware, async (req, res) => {
       const config = await getOrCreateConfig();
       const buyer = await User.findById(req.user.userId);
 
-      const welcomeText = `Hello ${buyer?.name || 'Buyer'}! Welcome to the booking chat for "${cattle.name}" (PKR ${cattle.price.toLocaleString()}).\n\nPlease transfer your payment to Admin details below and upload your payment screenshot here to confirm your booking.`;
+      const commissionRate = config.commissionRate || 3;
+      const commissionAmount = Math.ceil((cattle.price * commissionRate) / 100);
+
+      const welcomeText =
+        `Hello ${buyer?.name || 'Buyer'}! 👋 Welcome to the booking chat for "${cattle.name}".\n` +
+        `\n📋 BOOKING TERMS — PLEASE READ CAREFULLY:\n` +
+        `• Animal Price: PKR ${cattle.price.toLocaleString()}\n` +
+        `• Platform Commission (${commissionRate}%): PKR ${commissionAmount.toLocaleString()}\n` +
+        `• You only pay PKR ${commissionAmount.toLocaleString()} now to confirm your booking.\n` +
+        `• The remaining balance (PKR ${(cattle.price - commissionAmount).toLocaleString()}) will be paid CASH ON DELIVERY when the animal is delivered to you.\n` +
+        `\n✅ Transfer exactly PKR ${commissionAmount.toLocaleString()} to the Admin account details shown below, upload your payment receipt screenshot, and your booking will be confirmed!`;
 
       booking = new Booking({
         cattleId,
         buyerId: req.user.userId,
         sellerId: cattle.sellerId,
         status: 'pending',
+        commissionRate,
+        commissionAmount,
+        animalPrice: cattle.price,
         messages: [{
           sender: 'system',
           senderName: 'AgriTradeX System',

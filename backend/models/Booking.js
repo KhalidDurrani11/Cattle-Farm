@@ -21,6 +21,9 @@ const bookingSchema = new mongoose.Schema({
   paymentScreenshot: { type: String },
   paymentRef: { type: String, trim: true },
   paidAmount: { type: Number },
+  commissionRate: { type: Number, default: 3 },
+  commissionAmount: { type: Number },
+  animalPrice: { type: Number },
   adminNotes: { type: String, trim: true },
   messages: [bookingMessageSchema],
 }, { timestamps: true });

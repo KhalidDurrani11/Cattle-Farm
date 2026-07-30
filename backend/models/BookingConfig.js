@@ -9,6 +9,7 @@ const bookingConfigSchema = new mongoose.Schema({
   easypaisaTitle: { type: String, default: 'AgriTradeX Booking' },
   jazzcashNumber: { type: String, default: '0300-7654321' },
   jazzcashTitle: { type: String, default: 'AgriTradeX Booking' },
+  commissionRate: { type: Number, default: 3, min: 0, max: 100 },
   instructions: {
     type: String,
     default: 'Please transfer the payment/advance fee to book this animal. Upload the payment receipt/screenshot in this chat for instant verification by Admin.'
